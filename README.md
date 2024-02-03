@@ -1,4 +1,11 @@
-### Hi there 👋
+### Simply Wealth  👋
+
+This a GitHub repo for our cs673 team project. Our objective is to build a stock game social application. 
+Current contributors (in no particular order) are:
+
+1. Danti Yang
+2. Shiddharth Saran M
+3. Samantha Kuang
 
 <!--
 **simplywealth/SimplyWealth** is a ✨ _special_ ✨ repository because its `README.md` (this file) appears on your GitHub profile.
