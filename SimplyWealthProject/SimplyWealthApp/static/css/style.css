@@ -1,0 +1,79 @@
+@import url("https://fonts.googleapis.com/css2?family=Poppins&display=swap");
+
+* {
+    padding: 0;
+    margin: 0;
+    box-sizing: border-box;
+    font-family: "Poppins", sans-serif;
+}
+
+:root {
+    --primary_bg: #1E1E1E; /* Dark blue/gray similar to VS Code */
+    --color: #ffffff; /* White text color */
+    --vscode-blue: #007ACC; /* VS Code blue color */
+}
+
+body {
+    background: var(--primary_bg);
+    color: var(--color); /* Apply white color to text */
+}
+
+header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem 2rem;
+}
+
+.logo img {
+    height: 50px; /* Adjust based on your logo size */
+}
+
+.navbar ul {
+    display: flex;
+    list-style: none;
+}
+
+.navbar ul li {
+    margin-left: 20px;
+}
+
+.navbar ul li a {
+    text-decoration: none;
+    color: var(--color); /* Ensure links are also white */
+}
+
+.center-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: calc(100vh - 60px); /* Adjust height considering header */
+    text-align: center;
+}
+
+.center-content h1 {
+    font-size: 4rem; /* Very large text */
+    margin-bottom: 20px;
+    color: var(--color); /* Ensure h1 text is white */
+}
+
+.button-container {
+    display: flex;
+    gap: 20px;
+}
+
+.button {
+    padding: 10px 20px;
+    font-size: 16px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    background-color: var(--vscode-blue);
+    color: #fff; /* Text color for buttons is already white */
+    transition: background-color 0.3s;
+}
+
+.button:hover {
+    background-color: darken(var(--vscode-blue), 10%);
+}
