@@ -1,1 +1,32 @@
-__pycache__/
+# Byte-compiled / optimized Python files
+*.pyc
+*.pyo
+__pycache__
+
+# Django development server
+*.log
+
+# SQLite database file
+*.sqlite3
+
+# Secret key settings
+*.secret_key
+
+# Environment variables file
+.env
+
+# IDE and editor files
+.vscode/
+.idea/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+# Dependency directories
+venv/
+env/
+env36/
+bin/
+lib/
