@@ -1,35 +1,93 @@
 {% load static %}
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sign Up</title>
-    <link rel="stylesheet" href="{% static 'css/signup.css' %}">
+    <title>SignUp</title>
+    <link rel="stylesheet" href="{% static 'css/account.css' %}">
 </head>
 <body>
-    <div class="container">
-        <h2>Create your account</h2>
-        <form action="{% url 'signup' %}" method="post">
+    <div class="signup-container">
+        <h1>Create Your Account</h1>
+        <form class="signup-form" action="{% url 'signup' %}" method="post" onsubmit="return validateForm()">
             {% csrf_token %}
             <label for="first_name">First Name:</label>
-            <input type="text" id="first_name" name="first_name" required>
+            <input type="text" id="first_name" name="first_name" required placeholder="Your First Name">
 
             <label for="last_name">Last Name:</label>
-            <input type="text" id="last_name" name="last_name" required>
+            <input type="text" id="last_name" name="last_name" required placeholder="Your Last Name">
 
             <label for="email">Email:</label>
-            <input type="email" id="email" name="email" required>
+            <input type="email" id="email" name="email" required placeholder="Your Email">
+
+            <label for="username">Username:</label>
+            <input type="text" id="username" name="username" required placeholder="Your Username">
 
             <label for="password">Password:</label>
-            <input type="password" id="password" name="password" required>
+            <input type="password" id="password1" name="password1" required placeholder="*********">
 
             <label for="confirm_password">Confirm Password:</label>
-            <input type="password" id="confirm_password" name="confirm_password" required>
+            <input type="password" id="password2" name="password2" required placeholder="*********">
 
             <button type="submit">Sign Up</button>
+
+            {% if messages %}
+            <ul class="messages">
+                {% for message in messages %}
+                <li>{{ message }}</li>
+                {% endfor %}
+            </ul>
+            {% endif %}
         </form>
+        <footer>
+            <select>
+                <option value="en">English (United States) </option>
+                <option value="en">English (United States) </option>
+            </select>
+            <div class="fotter-links">
+                <a href="#">Help</a>
+                <a href="#">Privacy</a>
+                <a href="#">Terms</a>
+            </div>
+        </footer>
     </div>
+
+    <script>
+        function validateForm() {
+            var password = document.getElementById("password1").value;
+            var confirmpassword = document.getElementById("password2").value;
+
+            //check password meets length requirement
+            if (password1.length <8){
+                alert("Password must be at least 8 characters long.")
+                return false;
+            }
+
+            var hasLetters = /[a-zA-Z]/.test(password);
+            var hasLetters = /\d/.test(password);
+
+            if (!hasLetters || !hasNumbers){
+                alert("Password must contain both letters and numbers");
+                return false
+            }
+
+            // check password match confirmpassword
+            if (password != confirmpassword){
+                alert("Passwords do not match");
+                return false;
+            }
+
+            // check emails has @domain.com
+            var email = document.getElementById("Email").value;
+            
+            if (!/\S+@\S+\.\S+/.test(email)) {
+                alert("Email must be valid (e.g., user@example.com)");
+                return false;
+            }
+
+            return true;
+        }
+    </script>
 </body>
 </html>

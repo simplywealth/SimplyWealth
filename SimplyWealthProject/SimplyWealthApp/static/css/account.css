@@ -1,0 +1,94 @@
+@import url("https://fonts.googleapis.com/css2?family=Poppins&display=swap");
+
+* {
+    padding: 0;
+    margin: 0;
+    box-sizing: border-box;
+    font-family: "Poppins", sans-serif;
+}
+
+:root {
+    --primary_bg: #1E1E1E; /* Dark blue/gray similar to VS Code */
+    --vscode-blue: #007ACC; /* VS Code blue color */
+}
+
+html, body {
+    height: 100%;
+    margin: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--primary_bg)
+  }
+  
+  .container {
+    width: 100%;
+  }
+
+/* CSS for the sign-up form container */
+.signup-container {
+    width: 400px; /* Adjust width as needed */
+    margin: 100px auto; /* Center the container horizontally */
+    padding: 20px;
+    background-color: #ffffff; /* White background */
+    border: 1px solid #cccccc; /* Gray border */
+    border-radius: 5px; /* Rounded corners */
+  }
+  
+  /* CSS for form elements */
+  .signup-form input[type="text"],
+  .signup-form input[type="email"],
+  .signup-form input[type="password"] {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 10px;
+    border: 1px solid #cccccc; /* Gray border for input fields */
+    border-radius: 5px; /* Rounded corners for input fields */
+  }
+  
+  .signup-form button[type="submit"] {
+    width: 100%;
+    padding: 10px;
+    background-color: #4285f4; /* Google Blue */
+    color: #ffffff;
+    border: none;
+    border-radius: 5px; /* Rounded corners for the submit button */
+    cursor: pointer;
+  }
+  
+  .signup-form button[type="submit"]:hover {
+    background-color: #3c78d8; /* Darker shade of Google Blue on hover */
+  }
+  
+
+  .login-container {
+    width: 400px; /* Adjust width as needed */
+    margin: 100px auto; /* Center the container horizontally */
+    padding: 20px;
+    background-color: #ffffff; /* White background */
+    border: 1px solid #cccccc; /* Gray border */
+    border-radius: 5px; /* Rounded corners */
+  }
+
+  .login-form input[type="usrname"],
+  .login-form input[type="password"] {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 10px;
+    border: 1px solid #cccccc; /* Gray border for input fields */
+    border-radius: 5px; /* Rounded corners for input fields */
+  }
+  
+  .login-form button[type="submit"] {
+    width: 100%;
+    padding: 10px;
+    background-color: #4285f4; /* Google Blue */
+    color: #ffffff;
+    border: none;
+    border-radius: 5px; /* Rounded corners for the submit button */
+    cursor: pointer;
+  }
+  
+  .login-form button[type="submit"]:hover {
+    background-color: #3c78d8; /* Darker shade of Google Blue on hover */
+  }
