@@ -1,7 +1,7 @@
 # Byte-compiled / optimized Python files
 *.pyc
 *.pyo
-__pycache__
+*__pycache__/*
 
 # Django development server
 *.log
@@ -30,3 +30,6 @@ env/
 env36/
 bin/
 lib/
+
+#
+.DS_Store

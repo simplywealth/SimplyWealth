@@ -21,3 +21,8 @@ Here are some ideas to get you started:
 - 😄 Pronouns: ...
 - ⚡ Fun fact: ...
 -->
+
+SimplyWealth(myproject)/
+|--manage.py
+|--my_project.py/
+|   |-__init__.py
