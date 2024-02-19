@@ -8,14 +8,14 @@
 }
 
 :root {
-    --primary_bg: #1E1E1E; /* Dark blue/gray similar to VS Code */
-    --color: #ffffff; /* White text color */
-    --vscode-blue: #007ACC; /* VS Code blue color */
+    --primary_bg: #1E1E1E; 
+    --color: #ffffff; 
+    --vscode-blue: #007ACC; 
 }
 
 body {
     background: var(--primary_bg);
-    color: var(--color); /* Apply white color to text */
+    color: var(--color); 
 }
 
 header {
@@ -26,7 +26,7 @@ header {
 }
 
 .logo img {
-    height: 50px; /* Adjust based on your logo size */
+    height: 50px; 
 }
 
 .navbar ul {
@@ -40,7 +40,7 @@ header {
 
 .navbar ul li a {
     text-decoration: none;
-    color: var(--color); /* Ensure links are also white */
+    color: var(--color); 
 }
 
 .center-content {
@@ -48,14 +48,14 @@ header {
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    height: calc(100vh - 60px); /* Adjust height considering header */
+    height: calc(100vh - 60px); 
     text-align: center;
 }
 
 .center-content h1 {
-    font-size: 4rem; /* Very large text */
+    font-size: 4rem; 
     margin-bottom: 20px;
-    color: var(--color); /* Ensure h1 text is white */
+    color: var(--color);
 }
 
 .button-container {
@@ -70,7 +70,7 @@ header {
     border-radius: 4px;
     cursor: pointer;
     background-color: var(--vscode-blue);
-    color: #fff; /* Text color for buttons is already white */
+    color: #fff; 
     transition: background-color 0.3s;
 }
 
