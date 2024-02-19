@@ -70,8 +70,8 @@ html, body {
     border-radius: 5px; /* Rounded corners */
   }
 
-  .login-form input[type="usrname"],
-  .login-form input[type="password"] {
+  .login-form input[type="password"],
+  .login-form input[type="text"] {
     width: 100%;
     padding: 10px;
     margin-bottom: 10px;
