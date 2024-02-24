@@ -43,7 +43,7 @@ def login_view(request):
             user = authenticate(username=username, password=password)
             if user is not None:
                 login(request, user)
-                return(redirect('index'))
+                return redirect(reverse('userhome'))
         else:
             return render(request, "welcome/signup.html", {'form': form})
     else:
@@ -51,11 +51,33 @@ def login_view(request):
         context = {'form': form}
         return render(request, "welcome/login.html", context)
 ###
-def userhome(request, username):
-    return HttpResponse(f"{username}'s homepage!")
+def userhome(request):
+    return render(request, "user/userhome.html", {'username':request.user})
 
 
-# def registerPage(request):
-#     form = UserCreationForm()
-#     context = {'form':form}
-#     return render(request, 'welcome/register.html', UserCreationForm())
+def test_charjs(request):
+    return render(request, "user/testchartjs.html")
+    
+    
+from django.views.generic import TemplateView
+from chartjs.views.lines import BaseLineChartView
+
+class LineChartJSONView(BaseLineChartView):
+    def get_labels(self):
+        """Return 7 labels for the x-axis."""
+        return ["January", "February", "March", "April", "May", "June", "July"]
+
+    def get_providers(self):
+        """Return names of datasets."""
+        return ["Central", "Eastside", "Westside"]
+
+    def get_data(self):
+        """Return 3 datasets to plot."""
+
+        return [[75, 44, 92, 11, 44, 95, 35],
+                [41, 92, 18, 3, 73, 87, 92],
+                [87, 21, 94, 3, 90, 13, 65]]
+
+
+line_chart = TemplateView.as_view(template_name='user/testchartjs.html')
+line_chart_json = LineChartJSONView.as_view()
