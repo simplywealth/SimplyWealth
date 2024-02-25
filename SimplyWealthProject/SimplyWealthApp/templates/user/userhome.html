@@ -1,0 +1,177 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>welcome {{user_profile.user.username}} </title>
+    <!-- Link to your CSS file -->
+    <link rel="stylesheet" href="{% static 'css/userhome.css' %}">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <header>
+        <div class="logo">SimplyWealth</div>
+        <input type="search" placeholder="search for a friend" />
+
+        <nav class="navbar">
+            <ul>
+                <li><a href="#">Company</a></li>
+                <li><a href="#">Blog</a></li>
+                <li><a href="#">Contact</a></li>
+            </ul>
+        </nav>
+    </header>
+    <div class="grid-container">
+
+        <aside id="left-side">
+            <div id="user_details">
+                <div id="username">
+                    <h2>user: @{{user_profile.user.username}}</h2>
+                </div>
+                <div id="profilo_image">
+                    {% if user_profile.profile_picture %}
+                        <img src="{{ user_profile.profile_picture.url }}" alt="Profile Picture">
+                    {% else %}
+                        <img src="{% static 'img/test.png' %}" alt="Default Profile">
+                    {% endif %}
+                </div>
+                <!-- Form for uploading profile picture -->
+                <form method="post" action="{% url 'upload_profile_picture' %}" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    <label for="fileInput" class="button-style">Choose File</label>
+                    <input type="file" id="fileInput" name="profile_picture">
+                    <button type="submit" class="button-style">Upload</button>
+                </form>
+
+                <div id="biography">
+                    <h2> BIOGRAPHY
+                        <span> this is a special cat. why are you not rapping. what is this? </span>
+                    </h2>
+                </div>
+            </div>
+            <div id="account-details">
+                <h2> Account</h2>
+                <h4> Total: ${{user_total}} </h4>
+            </div>
+            <div id="user-settings">
+                <h3> signout </h3>
+            </div>   
+        </aside>
+
+        <section id="center-top">
+            <h2>Market performance</h2>
+            <div id="market-performance">
+                <div id="list-section">
+                    <ul>
+                        today's top stocks are
+                        <li>STOCK 1</li>
+                        <li>Item 2</li>
+                        <li>Item 3</li>
+                        <li>Item 3</li>
+                        <li>Item 3</li>
+
+                    </ul>
+                </div>
+                <div id="graph-section">
+                    <canvas id="myChart_Market" width="200" height="100"></canvas>
+                </div>
+            </div>
+            
+        </section>
+
+        <section id="center-bottom">
+            <!-- Individual Portfolio Analysis Board -->
+                <h2>Portfolio Analysis</h2>
+                <canvas id="LineMarketvsUser" width="200" height="100">
+                </canvas>
+        </section>
+
+        <aside id="right-side">
+            <!-- Leader Board  -->
+            <div id="leader-board">
+                <!-- Content -->
+                leaderboard
+            </div>
+
+            <!-- Chat Box -->
+            <div id="chat-box">
+                <!-- Content -->
+                chatbox
+            </div>
+        </aside>
+    </div>
+
+    <footer>
+        <!-- Footer content goes here -->
+    </footer>
+
+    <script>
+        // Chart data and options for Market performance
+        var marketLabels = ["January", "February", "March", "April", "May", "June", "July"];
+        var marketData = {
+            labels: marketLabels,
+            datasets: [
+                {
+                    label: "Central",
+                    data: [75, 44, 92, 11, 44, 95, 35],
+                    borderColor: 'rgba(255, 99, 132, 1)',
+                    borderWidth: 1
+                },
+                {
+                    label: "Eastside",
+                    data: [41, 92, 18, 3, 73, 87, 92],
+                    borderColor: 'rgba(54, 162, 235, 1)',
+                    borderWidth: 1
+                },
+                {
+                    label: "Westside",
+                    data: [87, 21, 94, 3, 90, 13, 65],
+                    borderColor: 'rgba(255, 206, 86, 1)',
+                    borderWidth: 1
+                }
+            ]
+        };
+
+        var marketOptions = {};
+
+        // Get canvas element for Market performance chart
+        var marketCtx = document.getElementById("myChart_Market").getContext("2d");
+
+        // Create Market performance chart
+        var marketChart = new Chart(marketCtx, {
+            type: 'line',
+            data: marketData,
+            options: marketOptions
+        });
+
+        // Chart data and options for Portfolio Analysis
+        var userLabels = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
+        var userData = {
+            labels: userLabels,
+            datasets: [{
+                label: 'Previous 7 Day',
+                data: [65, 59, 80, 81, 56, 55, 40],
+
+                fill: false,
+                borderColor: 'rgb(75, 192, 192)',
+                tension: 0.1
+            }]
+        };
+
+        var userOptions = {};
+
+        // Get canvas element for Portfolio Analysis chart
+        var userCtx = document.getElementById("LineMarketvsUser").getContext("2d");
+
+        // Create Portfolio Analysis chart
+        var userChart = new Chart(userCtx, {
+            type: 'line',
+            data: userData,
+            options: userOptions
+        });
+    </script>
+</body>
+</html>
