@@ -1,0 +1,212 @@
+@import url("https://fonts.googleapis.com/css2?family=Poppins&display=swap");
+
+* {
+    padding: 0;
+    margin: 0;
+    box-sizing: border-box;
+    font-family: "Poppins", sans-serif;
+}
+
+:root {
+    --primary_bg: #47746e; 
+    --color: #ffffff; 
+    --hyperlink: #3a2c96; 
+}
+
+body {
+    background: var(--primary_bg);
+    color: var(--color);
+    justify-content: center; 
+    align-items: center;
+}
+
+header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 3rem 2rem 1rem;
+}
+
+.navbar ul {
+    display: flex;
+    list-style: none;
+}
+
+.navbar ul li {
+    margin-left: 5px;
+}
+
+.navbar ul li a {
+    text-decoration: none;
+    color: var(--hyperlink); 
+}
+
+.logo {
+    font-size: 24px;
+    font-weight: bold;
+}
+
+input[type="search"] {
+    width: 50%;
+    padding: 5px;
+    margin-bottom: 5px;
+    border: 1px solid #cccccc; 
+    border-radius: 5px;
+}
+
+
+/* body of the webpage - user specific*/
+
+.grid-container {
+    display: grid;
+    grid-template-areas:
+        'header header header header'
+        'leftside center-top center-top rightside'
+        'leftside center-bottom center-bottom rightside';
+    grid-template-columns: 1fr 2fr 2fr 1fr;
+    grid-template-rows: auto 1fr 1fr;
+    height: 100vh;
+    margin: 15px;
+    gap:15px;
+    box-sizing: border-box; /* Includes padding and border in the element's total width and height */
+
+}
+
+aside#left-side {
+    grid-area: leftside;
+    background-color: var(--primary_bg);
+    padding: 1rem;
+    overflow-y: auto;
+    border-radius: 5px;
+    box-shadow: 5px -5px rgba(0.1,0.1,0.1,0.1); /* Optional: adds a shadow to the right side */
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    height: 100%;
+    align-self: start;
+}
+
+aside#left-side div{
+    margin-left: 2px;
+    border-radius: 4px;
+    align-self: start;
+    margin-bottom: 10px;
+}
+
+section#center-top {
+    grid-area: center-top;
+    background-color:  #81a49f;
+    padding: 1rem;
+    box-shadow: 2px 0 5px rgba(0,0,0,0.1); /* Optional: adds a shadow to the right side */
+    border-radius: 15px;
+    display: flex;
+    flex-direction: column; /* Align children vertically */
+    gap: 20px;
+}
+
+section#center-top h2{
+    text-align: center;
+    margin-bottom: 1rem;
+}
+
+#market-performance {
+    display: flex;
+    gap: 10px; /* Adjust the gap as needed */
+}
+#list-section {
+    margin: 5px;
+    padding: 5px;
+    flex: 1;
+}
+
+#graph-section {
+    margin: 5px;
+    padding: 5px;
+    flex: 4; 
+}
+
+#myChart_Market {
+    width: 100%; /* Full width of its container */
+    height: auto; /* Height is auto to maintain the aspect ratio */
+    justify-content: center;
+}
+
+section#center-bottom {
+    grid-area: center-bottom;
+    background-color:  #81a49f;
+    padding: 1rem;
+    box-shadow: 2px 0 5px rgba(0,0,0,0.1); /* Optional: adds a shadow to the right side */
+    border-radius: 15px;
+
+}
+
+aside#right-side {
+    grid-area: rightside;
+    background-color: var(--primary_bg);
+    padding: 1rem;
+    overflow-y: auto;
+    border-radius: 5px;
+    box-shadow: -5px -5px rgba(0.1,0.1,0.1,0.1); /* Optional: adds a shadow to the right side */
+}
+
+
+/* left personalize */
+#username h2{
+    margin-bottom: 10px;
+    color: rgb(13, 72, 103);
+}
+
+#profilo_image {
+    border-radius: 50%;
+    justify-content: center;
+}
+
+
+#biography {
+    display: flex;
+    flex-direction: column; /* Stack children vertically */
+    justify-content: flex-start; /* Align content to the start on the cross axis */
+    align-items: flex-start; /* Align items to the start on the main axis */
+    min-height: 100%;
+    word-wrap: break-word; /* Ensures words can be broken */
+    overflow-wrap: break-word; /* Ensures overflow text can break into new lines */
+    flex-shrink: 1; /* Allow the flex item to shrink if necessary */
+    min-width: 0; /* Override the minimum width of flex items */
+    margin: 30px;
+    border-radius: 50%;
+
+}
+#biography h2 span {
+    color: #333333; 
+    margin-top: 2px;
+    font-size: small;
+    display: block;
+    word-wrap: break-word;
+}
+
+.button-style {
+    background-color: #47746e; /* VSCode blue */
+    color: white; /* White text */
+    border: solid #020808; /* No border */
+    padding: 5px 10px; /* Uniform padding */
+    border-radius: 4px; /* Rounded corners */
+    font-size: 10px; /* Font size */
+    cursor: pointer;
+    transition: background-color 0.3s ease; /* Smooth transition for hover effect */
+    display: inline-block; /* Aligns elements inline */
+    text-align: center;
+    margin: 2px;
+    width: 70%; /* Adjust width as needed */
+    box-sizing: border-box; /* Includes padding and border in the element's total width and height */
+}
+
+.button-style:hover {
+    background-color: #005EA6;
+}
+
+/* Hides the default file input */
+#fileInput {
+    display: none;
+}
+
+
