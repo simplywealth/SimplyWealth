@@ -13,6 +13,14 @@
     <h5>List Date: {{results.list_date}}</h5>
     <h5>Ticket: {{results.ticker}}</h5>
     <h5>Market Cap: {{results.market_cap}}</h5>
+    <h5>Latest Stock Price Details:</h5>
+    <ul>
+      <li>Date: {{latest_stock_price.t}}</li>
+      <li>Open Price: {{latest_stock_price.o}}</li>
+      <li>Highest Price: {{latest_stock_price.h}}</li>
+      <li>Lowest Price: {{latest_stock_price.l}}</li>
+      <li>Close Price: {{latest_stock_price.c}}</li>
+    </ul>
     <div id="candlestickChart" style="width: 800px; height: 400px;"></div>
     <button>Buy</button>
 

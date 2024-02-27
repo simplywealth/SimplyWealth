@@ -31,11 +31,15 @@ def get_ticker_details(request):
         curr_date =  date.today()
         thirty_days_ago = curr_date - timedelta(days=30)
 
-        ticker_timeseries_endpoint_url = f"https://api.polygon.io/v2/aggs/ticker/AAPL/range/1/day/{thirty_days_ago}/{curr_date}?adjusted=true&sort=asc&limit=30&apiKey=LnR21zv6euM7KmY_HafxN9XgwdnmltXE"
+        ticker_timeseries_endpoint_url = f"https://api.polygon.io/v2/aggs/ticker/AAPL/range/1/day/{thirty_days_ago}/{curr_date}?adjusted=true&sort=desc&limit=30&apiKey=LnR21zv6euM7KmY_HafxN9XgwdnmltXE"
         time_series_response = requests.get(ticker_timeseries_endpoint_url).json()['results']
         for val in time_series_response:
             val['t']=datetime.fromtimestamp(val['t']/1000).strftime('%Y-%m-%d')
+        latest_stock_price = time_series_response[0]
+        time_series_response = time_series_response[::-1]
+        
         output_response['time_series'] = json.dumps(time_series_response)
+        output_response['latest_stock_price'] = latest_stock_price
         return render(request, 'user/tickerDetails.html', output_response)
 
 
