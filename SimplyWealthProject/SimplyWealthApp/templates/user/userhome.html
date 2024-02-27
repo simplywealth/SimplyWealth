@@ -10,11 +10,17 @@
     <link rel="stylesheet" href="{% static 'css/userhome.css' %}">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="{% static 'js/userhome.js' %}"></script>
 </head>
 <body>
     <header>
         <div class="logo">SimplyWealth</div>
-        <input type="search" placeholder="search for a friend" />
+        <form method="post" action="{% url 'get_ticker_details' %}" enctype="multipart/form-data">
+            {% csrf_token %}
+            <input type="text" id="stockInp" name="stockName" placeholder="search for stock" />
+            <ul id="stockSuggestions"></ul>
+            <button type="submit" class="button-style">Search</button>
+        </form>
 
         <nav class="navbar">
             <ul>

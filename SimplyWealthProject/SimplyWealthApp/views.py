@@ -11,9 +11,36 @@ from django.db.models import Sum
 
 import uuid 
 from os.path import splitext
+from datetime import date, datetime, timedelta
+import requests
+import json
+
 
 def index(request):
     return render(request, "welcome/index.html")
+
+
+def get_ticker_details(request):
+    if request.method == "POST":
+        form = request.POST
+        # if form.is_valid():
+        stock_name = form.get('stockName').strip().upper()
+        ticker_details_endpoint_url = f"https://api.polygon.io/v3/reference/tickers/{stock_name}?apiKey=LnR21zv6euM7KmY_HafxN9XgwdnmltXE"
+        response = requests.get(ticker_details_endpoint_url).json()
+        output_response = {'results':response['results']}
+        curr_date =  date.today()
+        thirty_days_ago = curr_date - timedelta(days=30)
+
+        ticker_timeseries_endpoint_url = f"https://api.polygon.io/v2/aggs/ticker/AAPL/range/1/day/{thirty_days_ago}/{curr_date}?adjusted=true&sort=asc&limit=30&apiKey=LnR21zv6euM7KmY_HafxN9XgwdnmltXE"
+        time_series_response = requests.get(ticker_timeseries_endpoint_url).json()['results']
+        for val in time_series_response:
+            val['t']=datetime.fromtimestamp(val['t']/1000).strftime('%Y-%m-%d')
+        output_response['time_series'] = json.dumps(time_series_response)
+        return render(request, 'user/tickerDetails.html', output_response)
+
+
+
+
 
 
 ## SIGNUP AND LOGIN - ACCOUNTS PAGE
