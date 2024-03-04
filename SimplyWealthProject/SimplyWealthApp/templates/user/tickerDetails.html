@@ -1,0 +1,76 @@
+{% load static %}
+
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>{{results.name}} Ticker Details</title>
+    <link rel="stylesheet" href="{% static 'css/ticker.css' %}">
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+</head>
+
+<body>
+    <header>
+        <h2>{{results.name}}</h2>
+    </header>
+    <section id="details">
+        <h2>Description:</h2>
+        <p style="padding-left: 20px;">{{ results.description }}</p>
+
+        <div style="margin-bottom: 30px;"></div>
+
+        <h3 style="margin-bottom: 20px;">List Date: &nbsp; {{ results.list_date }}</h3>
+        <h3 style="margin-bottom: 20px;">Ticker Symbol: &nbsp; {{ results.ticker }}</h3>
+        <h3 style="margin-bottom: 20px;">Market Cap: &nbsp; {{ results.market_cap }}</h3>
+
+        <h3>Latest Stock Price Details:</h3>
+        <ul style="padding-left: 50px;">
+            <li>Date: {{latest_stock_price.t}}</li>
+            <li>Open Price: {{latest_stock_price.o}}</li>
+            <li>Highest Price: {{latest_stock_price.h}}</li>
+            <li>Lowest Price: {{latest_stock_price.l}}</li>
+            <li>Close Price: {{latest_stock_price.c}}</li>
+        </ul>
+    </section>
+
+    <section id="candlestickChart" class="chart-container">
+        <div class="chart-header">
+            <h2>Valuations of Last 4 Weeks</h2>
+            <button id="buyButton">Buy</button>
+        </div>
+        <div id="candlestickChartContainer" style="width: 800px; height: 400px;"></div>
+    </section>
+    
+
+    <script>
+        // Sample data for demonstration
+        var timejson = JSON.parse('{{time_series | escapejs}}')
+        // console.log(timejson)
+
+        // Extracting data into separate arrays
+        const dates = timejson.map(data => data.t);
+        const opens = timejson.map(data => data.o);
+        const highs = timejson.map(data => data.h);
+        const lows = timejson.map(data => data.l);
+        const closes = timejson.map(data => data.c);
+        console.log(timejson);
+        // Create the candlestick chart
+        const trace = {
+            x: dates,
+            close: closes,
+            high: highs,
+            low: lows,
+            open: opens,
+            type: 'candlestick',
+            increasing: {line: {color: 'green'}},
+            decreasing: {line: {color: 'red'}}
+        };
+
+        const data = [trace];
+
+        Plotly.newPlot('candlestickChartContainer', data);
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+</body>
+</html>
