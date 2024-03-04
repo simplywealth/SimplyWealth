@@ -1,0 +1,70 @@
+/* ticker.css */
+@import url("https://fonts.googleapis.com/css2?family=Poppins&display=swap");
+
+* {
+    padding: 0;
+    margin: 10;
+    box-sizing: border-box;
+    font-family: "Poppins", sans-serif;
+}
+
+:root {
+    --primary_bg: #1E1E1E; 
+    --vscode-blue: #007ACC; 
+}
+
+body {
+    background: var(--primary_bg);
+    color: white; 
+}
+
+  /* Style the header */
+  header {
+    background-color: #333; 
+    color: #fff;
+    padding: 20px; 
+  }
+  
+  /* Style the sections */
+  section {
+    padding: 20px; 
+    margin-bottom: 20px; 
+  }
+  
+  /* Style the button */
+  #buyButton {
+    background-color: #28a745; 
+    color: #fff;
+    border: none; 
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer; 
+  }
+  
+  /* Style the button on hover */
+  #buyButton:hover {
+    background-color: #218838; 
+  }
+  
+
+  .chart-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.chart-header h2 {
+    margin-right: 10px; 
+}
+
+.chart-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+#candlestickChartContainer {
+    width: 800px; 
+    height: 400px; 
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1); 
+}
