@@ -1,0 +1,70 @@
+/* ticker.css */
+@import url("https://fonts.googleapis.com/css2?family=Poppins&display=swap");
+
+* {
+    padding: 0;
+    margin: 10;
+    box-sizing: border-box;
+    font-family: "Poppins", sans-serif;
+}
+
+:root {
+    --primary_bg: #1E1E1E; 
+    --vscode-blue: #007ACC; 
+}
+
+body {
+    background: var(--primary_bg);
+    color: white; /* Set text color to white for better visibility */
+}
+
+  /* Style the header */
+  header {
+    background-color: #333; /* Blue background for the header */
+    color: #fff; /* White text color */
+    padding: 20px; /* Add padding to the header */
+  }
+  
+  /* Style the sections */
+  section {
+    padding: 20px; /* Add padding to sections */
+    margin-bottom: 20px; /* Add some space between sections */
+  }
+  
+  /* Style the button */
+  #buyButton {
+    background-color: #28a745; /* Green background for the button */
+    color: #fff; /* White text color */
+    border: none; /* Remove button border */
+    padding: 10px 20px; /* Add padding to the button */
+    border-radius: 5px; /* Rounded corners */
+    cursor: pointer; /* Add pointer cursor on hover */
+  }
+  
+  /* Style the button on hover */
+  #buyButton:hover {
+    background-color: #218838; /* Darker green color on hover */
+  }
+  
+
+  .chart-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.chart-header h2 {
+    margin-right: 10px; /* Add some spacing between the title and the button */
+}
+
+.chart-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+#candlestickChartContainer {
+    width: 800px; /* Set your desired width */
+    height: 400px; /* Set your desired height */
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1); /* Add shadow effect */
+}
