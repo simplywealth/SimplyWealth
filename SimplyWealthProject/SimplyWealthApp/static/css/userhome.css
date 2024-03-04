@@ -97,10 +97,10 @@ section#center-top {
     grid-area: center-top;
     background-color:  #81a49f;
     padding: 1rem;
-    box-shadow: 2px 0 5px rgba(0,0,0,0.1); /* Optional: adds a shadow to the right side */
+    box-shadow: 2px 0 5px rgba(0,0,0,0.1); 
     border-radius: 15px;
     display: flex;
-    flex-direction: column; /* Align children vertically */
+    flex-direction: column; 
     gap: 20px;
 }
 
@@ -111,7 +111,7 @@ section#center-top h2{
 
 #market-performance {
     display: flex;
-    gap: 10px; /* Adjust the gap as needed */
+    gap: 10px; 
 }
 #list-section {
     margin: 5px;
@@ -126,9 +126,42 @@ section#center-top h2{
 }
 
 #myChart_Market {
-    width: 100%; /* Full width of its container */
-    height: auto; /* Height is auto to maintain the aspect ratio */
+    width: 100%; 
+    height: auto; 
     justify-content: center;
+}
+
+#market-performance {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+}
+
+.search-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center; 
+    margin-bottom: 100%; 
+}
+
+input[type="text"] {
+    width: 90%; 
+    margin-bottom: 10px
+}
+
+#stockSuggestions{
+    width:90%;
+    list-style: none;
+}
+
+.search-container form {
+    display: flex;
+    align-items: center; /* Center the form elements vertically */
+}
+
+#list-section {
+    text-align: center; /* Center-align list section */
 }
 
 section#center-bottom {
@@ -164,14 +197,14 @@ aside#right-side {
 
 #biography {
     display: flex;
-    flex-direction: column; /* Stack children vertically */
-    justify-content: flex-start; /* Align content to the start on the cross axis */
-    align-items: flex-start; /* Align items to the start on the main axis */
+    flex-direction: column; 
+    justify-content: flex-start; 
+    align-items: flex-start; 
     min-height: 100%;
-    word-wrap: break-word; /* Ensures words can be broken */
-    overflow-wrap: break-word; /* Ensures overflow text can break into new lines */
-    flex-shrink: 1; /* Allow the flex item to shrink if necessary */
-    min-width: 0; /* Override the minimum width of flex items */
+    word-wrap: break-word; 
+    overflow-wrap: break-word; 
+    flex-shrink: 1; 
+    min-width: 0; 
     margin: 30px;
     border-radius: 50%;
 
@@ -185,19 +218,19 @@ aside#right-side {
 }
 
 .button-style {
-    background-color: #47746e; /* VSCode blue */
-    color: white; /* White text */
-    border: solid #020808; /* No border */
-    padding: 5px 10px; /* Uniform padding */
-    border-radius: 4px; /* Rounded corners */
-    font-size: 10px; /* Font size */
+    background-color: #47746e;
+    color: white; 
+    border: solid #020808; 
+    padding: 5px 10px; 
+    border-radius: 4px;
+    font-size: 10px; 
     cursor: pointer;
-    transition: background-color 0.3s ease; /* Smooth transition for hover effect */
-    display: inline-block; /* Aligns elements inline */
+    transition: background-color 0.3s ease; 
+    display: inline-block;
     text-align: center;
     margin: 2px;
-    width: 70%; /* Adjust width as needed */
-    box-sizing: border-box; /* Includes padding and border in the element's total width and height */
+    width: 70%;
+    box-sizing: border-box; 
 }
 
 .button-style:hover {
