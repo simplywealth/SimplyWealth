@@ -1,9 +1,10 @@
+##html for signout 
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SimplyWealth - Logout</title>
+    <title>SimplyWealth - Sign out</title>
     <link rel="stylesheet" href="{% static 'css/homepage.css' %}">
 </head>
 <body>
@@ -25,7 +26,7 @@
             <div class="button-container">
                 <a href="{% url 'signup' %}" class="button">Sign Up</a>
                 <a href="{% url 'login_view' %}" class="button">Login</a>
-                <a href="{% url 'logout_view' %}" class="button">Logout</a>  <!-- Corrected URL name -->
+                <a href="{% url 'logout_view' %}" class="button">Sign out</a>  <!-- Updated button text -->
             </div>
         </div>
     </div>
@@ -33,8 +34,10 @@
 </html>
 
 
-##function for logout in python file
+##python code for signout 
+from django.contrib.auth import logout  # Import the logout function
 def signout_view(request):
-    signout(request)
+    logout(request)
     messages.success(request, "You have been successfully signed out.")
     return redirect('index')
+
