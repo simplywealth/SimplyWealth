@@ -31,3 +31,10 @@
     </div>
 </body>
 </html>
+
+
+##function for logout in python file
+def signout_view(request):
+    signout(request)
+    messages.success(request, "You have been successfully signed out.")
+    return redirect('index')
