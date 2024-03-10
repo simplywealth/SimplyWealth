@@ -41,3 +41,12 @@ def signout_view(request):
     messages.success(request, "You have been successfully signed out.")
     return redirect('index')
 
+from django.contrib.auth import logout
+from django.shortcuts import redirect
+from django.contrib import messages
+
+def signout_view(request):
+    logout(request)
+    messages.success(request, "You have been successfully signed out.")
+    return redirect(request, "welcome/index.html") # Redirect to the login page
+
