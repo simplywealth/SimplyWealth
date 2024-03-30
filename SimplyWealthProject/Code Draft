@@ -50,3 +50,65 @@ def signout_view(request):
     messages.success(request, "You have been successfully signed out.")
     return redirect(request, "welcome/index.html") # Redirect to the login page
 
+##get the application for search_friends
+from flask import Flask, render_template, request
+import re
+
+app = Flask(__name__)
+
+# Function to extract friend names from userhome.css
+def extract_friends_from_css():
+    with open('static/userhome.css', 'r') as f:
+        css_content = f.read()
+    friend_names = re.findall(r'.friend::after\s*{\s*content:\s*"(.*)";\s*}', css_content)
+    return friend_names
+
+# Load friends from CSS file
+friends = extract_friends_from_css()
+
+@app.route('/')
+def index():
+    return render_template('search_friends.html')
+
+@app.route('/search', methods=['POST'])
+def search_friends():
+    search_query = request.form.get('search')
+    search_results = [friend for friend in friends if search_query.lower() in friend.lower()]
+    return render_template('search_friends.html', search_results=search_results)
+
+if __name__ == '__main__':
+    app.run(debug=True)
+
+
+##html for search_friends
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Search Friends</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='userhome.css') }}">
+</head>
+<body>
+    <div class="container">
+        <h1>Search Friends</h1>
+        <form action="/search" method="POST">
+            <label for="search">Search:</label>
+            <input type="text" id="search" name="search">
+            <button type="submit">Search</button>
+        </form>
+        <div id="search-results">
+            {% if search_results %}
+                <ul>
+                {% for friend in search_results %}
+                    <li>{{ friend }}</li>
+                {% endfor %}
+                </ul>
+            {% endif %}
+        </div>
+    </div>
+</body>
+</html>
+
+
+
