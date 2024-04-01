@@ -4,7 +4,7 @@ from django.contrib import messages
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from .forms import SignupForm, ProfilePictureForm
 from django.urls import reverse
-from django.contrib.auth import authenticate, login
+from django.contrib.auth import authenticate, login, logout
 from .models import *
 from django.utils import timezone
 from django.db.models import Sum
@@ -157,6 +157,11 @@ def signup(request):
         form = SignupForm()
         context = {'form': form}
         return render(request, "welcome/signup.html", context)
+
+def logout_view(request):
+    logout(request)
+    return render(request, "welcome/index.html")
+
 
 def login_view(request):
     if request.method == "POST":

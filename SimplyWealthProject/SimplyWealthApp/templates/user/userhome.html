@@ -65,7 +65,11 @@
                 <h4> Total: ${{user_total|floatformat:2}} </h4>
             </div>
             <div id="user-settings">
-                <h3> signout </h3>
+                <form action="{% url 'logout_view' %}" method="post">
+                    {% csrf_token %}
+                    <button type="submit">signout</button>
+                </form>
+                <!-- <h3> signout </h3> -->
             </div>   
         </aside>
 
