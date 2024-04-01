@@ -5,32 +5,43 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>{{results.name}} Ticker Details</title>
+    <title id="title"></title>
     <link rel="stylesheet" href="{% static 'css/ticker.css' %}">
     <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+    <!-- <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous"> -->
+    <style>
+        #stockCheckout,#sellButton,#stockSell,#backArrow{
+            display: none;
+        }
+        #backArrow{
+            height: 50px;
+            width: 50px;
+            padding-left: 5px;
+        }
+    </style>
 </head>
 
 <body>
     <header>
-        <h2>{{results.name}}</h2>
+        <h2 id="stockName"></h2>
     </header>
     <section id="details">
         <h2>Description:</h2>
-        <p style="padding-left: 20px;">{{ results.description }}</p>
+        <p style="padding-left: 20px;" id="description"></p>
 
         <div style="margin-bottom: 30px;"></div>
 
-        <h3 style="margin-bottom: 20px;">List Date: &nbsp; {{ results.list_date }}</h3>
-        <h3 style="margin-bottom: 20px;">Ticker Symbol: &nbsp; {{ results.ticker }}</h3>
-        <h3 style="margin-bottom: 20px;">Market Cap: &nbsp; {{ results.market_cap }}</h3>
+        <h3 style="margin-bottom: 20px;" id="listDate"></h3>
+        <h3 style="margin-bottom: 20px;" id="tickerSymbol"></h3>
+        <h3 style="margin-bottom: 20px;" id="marketCap"></h3>
 
         <h3>Latest Stock Price Details:</h3>
         <ul style="padding-left: 50px;">
-            <li>Date: {{latest_stock_price.t}}</li>
-            <li>Open Price: {{latest_stock_price.o}}</li>
-            <li>Highest Price: {{latest_stock_price.h}}</li>
-            <li>Lowest Price: {{latest_stock_price.l}}</li>
-            <li>Close Price: {{latest_stock_price.c}}</li>
+            <li id="date"></li>
+            <li id="op"></li>
+            <li id="hp"></li>
+            <li id="lp"></li>
+            <li id="cp"></li>
         </ul>
     </section>
 
@@ -38,7 +49,23 @@
         <div class="chart-header">
             <h2>Valuations of Last 4 Weeks</h2>
             <button id="buyButton">Buy</button>
+            <button id="sellButton">Sell</button>
+            <img src="{% static 'img/arrow.png' %}" id="backArrow">
         </div>
+        
+        <div id="stockCheckout">
+            <label for="stockQuantity">Select Stock Quantity to buy:</label>
+            <input id="stockQuantity" type="number" step="0.1" min="0.1">
+            <button id="checkoutBtn" class="btn btn-success">Checkout</button>
+            <p id="stockBuyMsg"></p>
+        </div>
+        <div id="stockSell">
+            <label for="stockSellQuantity">Select Stock Quantity to sell:</label>
+            <input id="stockSellQuantity" type="number" min="0.1" step="0.1">
+            <button id="sellConfirmBtn">Confirm</button>
+            <p id="stockSellMsg"></p>
+        </div>
+
         <div id="candlestickChartContainer" style="width: 800px; height: 400px;"></div>
     </section>
     
@@ -54,7 +81,6 @@
         const highs = timejson.map(data => data.h);
         const lows = timejson.map(data => data.l);
         const closes = timejson.map(data => data.c);
-        console.log(timejson);
         // Create the candlestick chart
         const trace = {
             x: dates,
@@ -71,6 +97,155 @@
 
         Plotly.newPlot('candlestickChartContainer', data);
     </script>
+    <script>
+        function getCookie(name) {
+            const value = `; ${document.cookie}`;
+            const parts = value.split(`; ${name}=`);
+            if (parts.length === 2) return parts.pop().split(';').shift();
+        }
+
+        var results = JSON.parse('{{results | escapejs}}');
+        var sellOpt = "{{sell_option}}";
+        const sellBtn = document.getElementById('sellButton')
+        if (sellOpt == 'True'){
+            sellBtn.style.display = "inline-block"
+        }
+        
+        var latest_stock_price = JSON.parse('{{latest_stock_price | escapejs}}');
+        document.getElementById('title').innerText = results.name + " Ticker Details";
+        document.getElementById('stockName').innerText = results.name;
+        document.getElementById('listDate').innerText = "List Date: " + results.list_date;
+        document.getElementById('tickerSymbol').innerText = "Ticker Symbol: " + results.ticker;
+        document.getElementById('marketCap').innerText = "Market Cap: " +results.market_cap;
+        document.getElementById('description').innerText = results.description;
+
+        document.getElementById('date').innerText = 'Date: ' + latest_stock_price.t;
+        document.getElementById('hp').innerText = 'Highest Price: ' + latest_stock_price.h;
+        document.getElementById('op').innerText = 'Open Price: ' + latest_stock_price.o;
+        document.getElementById('lp').innerText = 'Lowest Price: ' + latest_stock_price.l;
+        document.getElementById('cp').innerText = 'Close Price: ' + latest_stock_price.c;
+        document.addEventListener("DOMContentLoaded", function(){
+            const buyButton = document.getElementById("buyButton");
+            const backArrow = document.getElementById("backArrow");
+            const stockCheckout = document.getElementById("stockCheckout");
+            buyButton.addEventListener("click", function(){
+                
+                stockCheckout.style.display = "block";
+                backArrow.style.display = "block"
+                buyButton.style.display = "none";
+                sellBtn.style.display = "none";
+            })
+            const stockQuantity = document.getElementById("stockQuantity");
+            const checkoutBtn = document.getElementById("checkoutBtn");
+            const stockBuyMsg = document.getElementById("stockBuyMsg");
+            checkoutBtn.addEventListener("click", function(){
+                const stockQuantityVal = Number(stockQuantity.value);
+                if (stockQuantityVal <= 0){
+                    stockBuyMsg.innerText = "Enter a value greater than 0";
+                }
+                else{
+                    const params = {
+                        "stock_symbol": results.ticker,
+                        "stock_units":stockQuantityVal,
+                        "stock_price": latest_stock_price.c,
+                        "stock_price_date": latest_stock_price.t
+                    }
+                    const csrftoken = getCookie('csrftoken');
+                    fetch('/app/buy_stock',{
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-CSRFToken': csrftoken
+                        },
+                        body: JSON.stringify(params)
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        stockBuyMsg.innerText = data.msg;
+                    })
+                    .catch(error => {
+                        console.log(error);
+                    })
+                }
+            })
+            const stockSellQuantity = document.getElementById('stockSellQuantity');
+            sellBtn.addEventListener("click", function(){
+                fetch("/app/get_stock_units?stock_symbol="+results.ticker)
+                .then(response => {
+                    return response.json()
+                })
+                .then(data => {
+                    document.getElementById('stockSell').style.display = 'block';
+                    backArrow.style.display = "block"
+                    sellBtn.style.display = 'none';
+                    buyButton.style.display = 'none'
+                    
+                    stockSellQuantity.setAttribute("max", data.stock_units);
+                    stockSellQuantity.value = data.stock_units;
+                })
+            })
+
+            const sellConfirmBtn = document.getElementById('sellConfirmBtn');
+            const stockSellMsg = document.getElementById("stockSellMsg");
+            sellConfirmBtn.addEventListener('click', function(){
+                const stockSellQuantityVal = Number(stockSellQuantity.value);
+                if (stockSellQuantityVal <= 0){
+                    stockSellMsg.innerText = "Enter a value greater than 0";
+                }
+                else{
+                    const params = {
+                        "stock_symbol": results.ticker,
+                        "stock_units":stockSellQuantityVal,
+                        "stock_price": latest_stock_price.c,
+                        "stock_price_date": latest_stock_price.t
+                    }
+                    const csrftoken = getCookie('csrftoken');
+                    fetch('/app/sell_stock',{
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-CSRFToken': csrftoken
+                        },
+                        body: JSON.stringify(params)
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        stockSellMsg.innerText = data.msg;
+                    })
+                    .catch(error => {
+                        console.log(error);
+                    })
+
+                }
+            })
+
+            backArrow.addEventListener("click", function(){
+                stockSellMsg.innerText = "";
+                stockBuyMsg.innerText = "";
+                stockCheckout.style.display = "none";
+                backArrow.style.display = "none"
+                document.getElementById('stockSell').style.display = 'none'
+                buyButton.style.display = "block";
+                
+                
+                fetch("/app/get_stock_units?stock_symbol="+results.ticker)
+                .then(response => {
+                    return response.json()
+                })
+                .then(data => {
+                    if(data.stock_units > 0){
+                        sellBtn.style.display = "block";
+
+                    }
+                    else{
+                        sellBtn.style.display = "none";
+                    }
+                })
+
+            })
+        })
+    </script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+    <!-- <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous"> -->
 </body>
-</html>
+</html>"

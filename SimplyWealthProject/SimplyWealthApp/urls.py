@@ -10,6 +10,10 @@ urlpatterns = [
     path('chart', line_chart, name='line_chart'),
     path('chartJSON', line_chart_json, name='line_chart_json'),
     path('upload-profile-picture/', views.upload_profile_picture, name='upload_profile_picture'),
-    path('get_ticker_details', views.get_ticker_details, name='get_ticker_details')
+    path('buy_stock', views.buy_stock, name='buy_stock'),
+    path('get_ticker_details', views.get_ticker_details, name='get_ticker_details'),
+    path('get_stock_units', views.get_stock_units, name='get_stock_units'),
+    path('sell_stock', views.sell_stock, name='sell_stock')
+    
 #    path("<str:username>/", views.userhome, name='userhome')
 ]

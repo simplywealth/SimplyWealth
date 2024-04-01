@@ -18,6 +18,24 @@ class UserProfile(models.Model):
     def __str__(self):
         return self.user.username
 
+class StockTransanctions(models.Model):
+    user = models.ForeignKey(UserProfile, on_delete=models.CASCADE)
+    transaction_id = models.CharField(primary_key= True, max_length=100, unique=True)
+    stock_symbol = models.CharField(max_length=5)
+    transaction_type = models.CharField(max_length=4, default='buy')
+    stock_price = models.DecimalField(max_digits=10, decimal_places=2)
+    stock_units = models.DecimalField(max_digits=10, decimal_places=2)
+    stock_price_date = models.DateField()
+    timestamp = models.DateTimeField(auto_now_add=True)
+
+class UserStockPortfolio(models.Model):
+    user = models.ForeignKey(UserProfile, on_delete=models.CASCADE)
+    stock_symbol = models.CharField(max_length=5)
+    stock_units = models.DecimalField(max_digits=10, decimal_places=2)   
+        
+
+
+
 class Transaction(models.Model):
     user = models.ForeignKey(UserProfile, on_delete=models.CASCADE)
     transaction_id = models.CharField(primary_key= True, max_length=100, unique=True)
