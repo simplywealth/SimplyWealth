@@ -36,8 +36,10 @@ def sell_stock(request):
                     return JsonResponse({"response_code":403, "msg":"Selected number of stock units is greater than avaible stock units in user portfolio."})
         user_amount = user_account.amount
         stock_sell_amount = params['stock_price'] * params['stock_units']
-        stock_transanction = StockTransanctions(user=user_profile, transaction_id=uuid.uuid4(), stock_symbol=params['stock_symbol'], 
-                                                    transaction_type='sell',stock_price = params['stock_price'], stock_price_date = params['stock_price_date'], stock_units=params['stock_units'])
+        uuid_str = uuid.uuid4()
+        print(uuid_str)
+        stock_transanction = StockTransanctions(user=user_profile, transaction_id=uuid_str, stock_symbol=params['stock_symbol'], 
+                                                    transaction_type='sell',stock_price = params['stock_price'], stock_price_date = params['stock_price_date'], stock_units=params['stock_units'], timestamp=timezone.now())
         stock_transanction.save()
         user_amount = float(user_amount) + float(stock_sell_amount)
         user_account.amount = round(user_amount, 2)
@@ -55,8 +57,10 @@ def buy_stock(request):
         user_amount = float(user_account.amount)
         stock_buy_amount = float(params['stock_price'] * params['stock_units'])
         if stock_buy_amount < user_amount:
-            stock_transanction = StockTransanctions(user=user_profile, transaction_id=uuid.uuid4(), stock_symbol=params['stock_symbol'], 
-                                                    transaction_type='buy',stock_price = params['stock_price'], stock_price_date = params['stock_price_date'], stock_units=params['stock_units'])
+            uuid_str = uuid.uuid4()
+            print(uuid_str)
+            stock_transanction = StockTransanctions(user=user_profile, transaction_id=uuid_str, stock_symbol=params['stock_symbol'], 
+                                                    transaction_type='buy',stock_price = params['stock_price'], stock_price_date = params['stock_price_date'], stock_units=params['stock_units'], timestamp=timezone.now())
             stock_transanction.save()
             user_amount = float(user_amount) - float(stock_buy_amount)
             user_account.amount = round(user_amount, 2)
@@ -95,7 +99,7 @@ def get_ticker_details(request):
         form = request.POST
         # if form.is_valid():
         stock_name = form.get('stockName').strip().upper()
-        ticker_details_endpoint_url = f"https://api.polygon.io/v3/reference/tickers/{stock_name}?apiKey=UqR1AwHB4eIRO0pUzjG8IxuMlFHeJczI"
+        ticker_details_endpoint_url = f"https://api.polygon.io/v3/reference/tickers/{stock_name}?apiKey=LnR21zv6euM7KmY_HafxN9XgwdnmltXE"
         response = requests.get(ticker_details_endpoint_url).json()
         
         output_response = {'results':json.dumps(response['results'])}
@@ -110,7 +114,7 @@ def get_ticker_details(request):
         curr_date =  date.today()
         thirty_days_ago = curr_date - timedelta(days=30)
 
-        ticker_timeseries_endpoint_url = f"https://api.polygon.io/v2/aggs/ticker/AAPL/range/1/day/{thirty_days_ago}/{curr_date}?adjusted=true&sort=desc&limit=30&apiKey=UqR1AwHB4eIRO0pUzjG8IxuMlFHeJczI"
+        ticker_timeseries_endpoint_url = f"https://api.polygon.io/v2/aggs/ticker/AAPL/range/1/day/{thirty_days_ago}/{curr_date}?adjusted=true&sort=desc&limit=30&apiKey=LnR21zv6euM7KmY_HafxN9XgwdnmltXE"
         time_series_response = requests.get(ticker_timeseries_endpoint_url).json()['results']
         for val in time_series_response:
             val['t']=datetime.fromtimestamp(val['t']/1000).strftime('%Y-%m-%d')

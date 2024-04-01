@@ -27,11 +27,16 @@ class StockTransanctions(models.Model):
     stock_units = models.DecimalField(max_digits=10, decimal_places=2)
     stock_price_date = models.DateField()
     timestamp = models.DateTimeField(auto_now_add=True)
+    def __str__(self):
+        return f"Stock Transaction for {self.user.user.username}, Stock: {self.stock_symbol}, Stock Units: {self.stock_units}, Transaction Type: {self.transaction_type}, Timestamp: {self.timestamp}"
 
 class UserStockPortfolio(models.Model):
     user = models.ForeignKey(UserProfile, on_delete=models.CASCADE)
     stock_symbol = models.CharField(max_length=5)
-    stock_units = models.DecimalField(max_digits=10, decimal_places=2)   
+    stock_units = models.DecimalField(max_digits=10, decimal_places=2) 
+    def __str__(self):
+        return f"User Stock Portfolio: {self.user.user.username}, Stock: {self.stock_symbol}, Stock Units: {self.stock_units}"
+  
         
 
 
