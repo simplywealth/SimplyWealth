@@ -243,6 +243,181 @@ def generate_html_file():
 if __name__ == "__main__":
     generate_html_file()
 
+##fixed code for html, trying to make it as a diagram
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Search and Add Friends Diagram</title>
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        margin: 20px;
+    }
 
+    .container {
+        max-width: 800px;
+        margin: 0 auto;
+    }
 
+    h1 {
+        text-align: center;
+    }
 
+    .box {
+        border: 1px solid #ccc;
+        padding: 10px;
+        margin-bottom: 20px;
+    }
+
+    .box-title {
+        background-color: #f0f0f0;
+        padding: 5px;
+        margin-bottom: 10px;
+    }
+
+    .code {
+        font-family: 'Courier New', Courier, monospace;
+        white-space: pre-wrap;
+    }
+</style>
+</head>
+<body>
+    <div class="container">
+        <h1>Search and Add Friends Diagram</h1>
+
+        <!-- Search Friends Section -->
+        <div class="box">
+            <div class="box-title">Search Friends</div>
+            <p>Retrieves input query from the search input field.</p>
+            <p>Filters the list of friends based on the query.</p>
+            <p>Displays the search results in the designated area.</p>
+            <pre class="code">
+                &lt;!-- Search Friends Section --&gt;
+                &lt;input type="text" id="searchInput" placeholder="Enter friend's name..."&gt;
+                &lt;button onclick="searchFriends()"&gt;Search&lt;/button&gt;
+                &lt;div id="searchResults"&gt;&lt;/div&gt;
+            </pre>
+        </div>
+
+        <!-- Add Friends Section -->
+        <div class="box">
+            <div class="box-title">Add Friends</div>
+            <p>Retrieves the new friend's name from the add input field.</p>
+            <p>Adds the new friend to the list of friends.</p>
+            <p>Displays an alert confirming the addition of the new friend.</p>
+            <pre class="code">
+                &lt;!-- Add Friends Section --&gt;
+                &lt;input type="text" id="addInput" placeholder="Enter friend's name..."&gt;
+                &lt;button onclick="addFriend()"&gt;Add&lt;/button&gt;
+            </pre>
+        </div>
+    </div>
+
+    <script>
+        // Dummy JavaScript functions for illustration purposes
+        function searchFriends() {
+            alert("Searching for friends...");
+        }
+
+        function addFriend() {
+            alert("Adding a new friend...");
+        }
+    </script>
+</body>
+</html>
+
+##Python Script code 
+def generate_html_diagram():
+    html_content = """
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Search and Add Friends Diagram</title>
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        margin: 20px;
+    }
+
+    .container {
+        max-width: 800px;
+        margin: 0 auto;
+    }
+
+    h1 {
+        text-align: center;
+    }
+
+    .box {
+        border: 1px solid #ccc;
+        padding: 10px;
+        margin-bottom: 20px;
+    }
+
+    .box-title {
+        background-color: #f0f0f0;
+        padding: 5px;
+        margin-bottom: 10px;
+    }
+
+    .code {
+        font-family: 'Courier New', Courier, monospace;
+        white-space: pre-wrap;
+    }
+</style>
+</head>
+<body>
+    <div class="container">
+        <h1>Search and Add Friends Diagram</h1>
+
+        <!-- Search Friends Section -->
+        <div class="box">
+            <div class="box-title">Search Friends</div>
+            <p>Retrieves input query from the search input field.</p>
+            <p>Filters the list of friends based on the query.</p>
+            <p>Displays the search results in the designated area.</p>
+            <pre class="code">
+                &lt;!-- Search Friends Section --&gt;
+                &lt;input type="text" id="searchInput" placeholder="Enter friend's name..."&gt;
+                &lt;button onclick="searchFriends()"&gt;Search&lt;/button&gt;
+                &lt;div id="searchResults"&gt;&lt;/div&gt;
+            </pre>
+        </div>
+
+        <!-- Add Friends Section -->
+        <div class="box">
+            <div class="box-title">Add Friends</div>
+            <p>Retrieves the new friend's name from the add input field.</p>
+            <p>Adds the new friend to the list of friends.</p>
+            <p>Displays an alert confirming the addition of the new friend.</p>
+            <pre class="code">
+                &lt;!-- Add Friends Section --&gt;
+                &lt;input type="text" id="addInput" placeholder="Enter friend's name..."&gt;
+                &lt;button onclick="addFriend()"&gt;Add&lt;/button&gt;
+            </pre>
+        </div>
+    </div>
+
+    <script>
+        // Dummy JavaScript functions for illustration purposes
+        function searchFriends() {
+            alert("Searching for friends...");
+        }
+
+        function addFriend() {
+            alert("Adding a new friend...");
+        }
+    </script>
+</body>
+</html>
+"""
+
+    with open("search_and_add_friends_diagram.html", "w") as html_file:
+        html_file.write(html_content)
+
+if __name__ == "__main__":
+    generate_html_diagram()
