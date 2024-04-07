@@ -110,5 +110,69 @@ if __name__ == '__main__':
 </body>
 </html>
 
+##html file for search firends and add friends without flask 
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Search and Add Friends</title>
+</head>
+<body>
+    <h1>Search and Add Friends</h1>
+    
+    <!-- Search Friends Section -->
+    <h2>Search Friends</h2>
+    <input type="text" id="searchInput" placeholder="Enter friend's name...">
+    <button onclick="searchFriends()">Search</button>
+    <div id="searchResults"></div>
+
+    <!-- Add Friends Section -->
+    <h2>Add Friends</h2>
+    <input type="text" id="addInput" placeholder="Enter friend's name...">
+    <button onclick="addFriend()">Add</button>
+
+    <script>
+        // Dummy friend data
+        var friends = ["Alice", "Bob", "Charlie", "David", "Emma"];
+
+        // Function to search friends
+        function searchFriends() {
+            var query = document.getElementById("searchInput").value.toLowerCase();
+            var searchResults = friends.filter(function(friend) {
+                return friend.toLowerCase().includes(query);
+            });
+
+            var searchResultsDiv = document.getElementById("searchResults");
+            searchResultsDiv.innerHTML = "";
+            if (searchResults.length === 0) {
+                searchResultsDiv.textContent = "No results found.";
+            } else {
+                searchResults.forEach(function(result) {
+                    var p = document.createElement("p");
+                    p.textContent = result;
+                    searchResultsDiv.appendChild(p);
+                });
+            }
+        }
+
+        // Function to add friend
+        function addFriend() {
+            var friendName = document.getElementById("addInput").value;
+            if (friendName) {
+                friends.push(friendName);
+                alert(friendName + " added as a friend.");
+                // Optionally, you can clear the input field after adding the friend
+                document.getElementById("addInput").value = "";
+            } else {
+                alert("Please enter a friend's name.");
+            }
+        }
+    </script>
+</body>
+</html>
+
+
+
 
 
