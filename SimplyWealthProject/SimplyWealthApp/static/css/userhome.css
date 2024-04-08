@@ -46,14 +46,6 @@ header {
     font-weight: bold;
 }
 
-input[type="search"] {
-    width: 50%;
-    padding: 5px;
-    margin-bottom: 5px;
-    border: 1px solid #cccccc; 
-    border-radius: 5px;
-}
-
 
 /* body of the webpage - user specific*/
 
@@ -61,15 +53,14 @@ input[type="search"] {
     display: grid;
     grid-template-areas:
         'header header header header'
-        'leftside center-top center-top rightside'
-        'leftside center-bottom center-bottom rightside';
-    grid-template-columns: 1fr 2fr 2fr 1fr;
+        'leftside center-top center-top center-top'
+        'leftside center-bottom center-bottom center-bottom'; 
+    grid-template-columns: 1fr 2fr 1fr; 
     grid-template-rows: auto 1fr 1fr;
     height: 100vh;
     margin: 15px;
-    gap:15px;
-    box-sizing: border-box; /* Includes padding and border in the element's total width and height */
-
+    gap: 15px;
+    box-sizing: border-box;
 }
 
 aside#left-side {
@@ -78,7 +69,7 @@ aside#left-side {
     padding: 1rem;
     overflow-y: auto;
     border-radius: 5px;
-    box-shadow: 5px -5px rgba(0.1,0.1,0.1,0.1); /* Optional: adds a shadow to the right side */
+    box-shadow: 5px -5px rgba(0.1,0.1,0.1,0.1); 
     display: flex;
     flex-direction: column;
     justify-content: space-between;
@@ -87,10 +78,10 @@ aside#left-side {
 }
 
 aside#left-side div{
-    margin-left: 2px;
+    /* margin-left: 2px; */
     border-radius: 4px;
     align-self: start;
-    margin-bottom: 10px;
+    /* margin-bottom: 5px; */
 }
 
 section#center-top {
@@ -106,7 +97,7 @@ section#center-top {
 
 section#center-top h2{
     text-align: center;
-    margin-bottom: 1rem;
+    /* margin-bottom: 1rem; */
 }
 
 #market-performance {
@@ -114,14 +105,14 @@ section#center-top h2{
     gap: 10px; 
 }
 #list-section {
-    margin: 5px;
-    padding: 5px;
+    /* margin: 5px; */
+    /* padding: 5px; */
     flex: 1;
 }
 
 #graph-section {
-    margin: 5px;
-    padding: 5px;
+    /* margin: 5px; */
+    /* padding: 5px; */
     flex: 4; 
 }
 
@@ -138,13 +129,6 @@ section#center-top h2{
     text-align: center;
 }
 
-.search-container {
-    display: flex;
-    flex-direction: column;
-    align-items: center; 
-    margin-bottom: 100%; 
-}
-
 input[type="text"] {
     width: 90%; 
     margin-bottom: 10px
@@ -157,33 +141,36 @@ input[type="text"] {
 
 .search-container form {
     display: flex;
-    align-items: center; /* Center the form elements vertically */
+    align-items: center; 
 }
 
 #list-section {
-    text-align: center; /* Center-align list section */
+    text-align: center; 
 }
 
 section#center-bottom {
     grid-area: center-bottom;
     background-color:  #81a49f;
     padding: 1rem;
-    box-shadow: 2px 0 5px rgba(0,0,0,0.1); /* Optional: adds a shadow to the right side */
+    box-shadow: 2px 0 5px rgba(0,0,0,0.1); 
     border-radius: 15px;
 
 }
 
-aside#right-side {
-    grid-area: rightside;
-    background-color: var(--primary_bg);
-    padding: 1rem;
-    overflow-y: auto;
-    border-radius: 5px;
-    box-shadow: -5px -5px rgba(0.1,0.1,0.1,0.1); /* Optional: adds a shadow to the right side */
+#center-bottom .center-bottom-container {
+    display: grid;
+    grid-template-columns: 1fr 2fr; 
+    gap: 1rem; 
+}
+
+#center-bottom .left-column {
+    padding-top: 10px;
+    margin-top: 30px;
+    box-shadow: 2px 0 5px rgba(0,0,0,0.2); 
+
 }
 
 
-/* left personalize */
 #username h2{
     margin-bottom: 10px;
     color: rgb(13, 72, 103);
@@ -243,3 +230,96 @@ aside#right-side {
 }
 
 
+.tree-table {
+    overflow-x: auto;
+}
+
+.tree-table table {
+    border-collapse: collapse;
+    width: 100%;
+}
+
+.tree-table th, .tree-table td {
+    border: 1px solid #25324d;
+    padding: 8px;
+    text-align: left;
+}
+
+.tree-table th {
+    background-color: #0a1a0e;
+}
+
+.tree-table tbody tr:nth-child(even) {
+    background-color: #0c7235;
+}
+
+.tree-table tbody tr:hover {
+    background-color: #a8d2cf;
+}
+
+
+#center-top {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr); 
+    gap: 20px; 
+}
+
+.left-column {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.clock-container {
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px; 
+}
+
+.clock-container img {
+    width: 30px; /* Adjust flag width */
+    margin-right: 10px; 
+}
+
+.table-container {
+    display: flex;
+    flex-direction: column;
+}
+
+.toggle-button {
+    margin-bottom: 10px; 
+}
+
+
+/* CSS for row formatting and text color */
+#leaderboard-body tr {
+    color: white; 
+}
+
+#leaderboard-body td {
+}
+
+/* CSS for dynamic styling */
+.gain-loss.positive {
+    color: rgb(137, 187, 137); 
+}
+
+.gain-loss.negative {
+    color: rgb(234, 108, 108); 
+}
+
+#polarAreaChart{
+    margin-top: 100px;
+    padding: 10px;
+}
+
+#stockInp {
+    font-size: 16px; 
+    padding: 10px;
+    border-radius: 10px; 
+    border: 1px solid #ccc; 
+    width: 150%; 
+    display:
+    margin: 0 auto;
+    margin-bottom: 10px; 
+}
