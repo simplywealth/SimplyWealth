@@ -1,14 +1,14 @@
 from django.shortcuts import render, redirect
-from django.http import HttpResponse
+from django.http import HttpResponse, JsonResponse
 from django.contrib import messages
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from .forms import SignupForm, ProfilePictureForm
 from django.urls import reverse
-from django.contrib.auth import authenticate, login
-from .models import UserProfile, Transaction
+from django.contrib.auth import authenticate, login, logout
+from .models import *
 from django.utils import timezone
 from django.db.models import Sum
-
+import decimal
 import uuid 
 from os.path import splitext
 from datetime import date, datetime, timedelta
@@ -19,19 +19,102 @@ import json
 def index(request):
     return render(request, "welcome/index.html")
 
+def sell_stock(request):
+    if request.method == "POST":
+        user_profile = UserProfile.objects.get(user=request.user)
+        params = json.loads(request.body.decode('utf-8'))
+        user_account = Transaction.objects.get(user=user_profile)
+        user_stock_portfolio = UserStockPortfolio.objects.filter(user = user_profile, stock_symbol=params['stock_symbol'])
+        if len(user_stock_portfolio) == 0:
+            return JsonResponse({"response_code":402, "msg":"Stock not found in User Portfolio."})
+        else:
+            for record in user_stock_portfolio:
+                if float(record.stock_units) >= float(params['stock_units']):
+                    record.stock_units = float(record.stock_units) - float(params['stock_units'])
+                    record.save()
+                else:
+                    return JsonResponse({"response_code":403, "msg":"Selected number of stock units is greater than avaible stock units in user portfolio."})
+        user_amount = user_account.amount
+        stock_sell_amount = params['stock_price'] * params['stock_units']
+        uuid_str = uuid.uuid4()
+        print(uuid_str)
+        stock_transanction = StockTransanctions(user=user_profile, transaction_id=uuid_str, stock_symbol=params['stock_symbol'], 
+                                                    transaction_type='sell',stock_price = params['stock_price'], stock_price_date = params['stock_price_date'], stock_units=params['stock_units'], timestamp=timezone.now())
+        stock_transanction.save()
+        user_amount = float(user_amount) + float(stock_sell_amount)
+        user_account.amount = round(user_amount, 2)
+        user_account.save()
+        return JsonResponse({"response_code":200, "msg":"Successfully sold stock units."})
+        
+
+
+
+def buy_stock(request):
+    if request.method == "POST":
+        user_profile = UserProfile.objects.get(user=request.user)
+        params = json.loads(request.body.decode('utf-8'))
+        user_account = Transaction.objects.get(user=user_profile)
+        user_amount = float(user_account.amount)
+        stock_buy_amount = float(params['stock_price'] * params['stock_units'])
+        if stock_buy_amount < user_amount:
+            uuid_str = uuid.uuid4()
+            print(uuid_str)
+            stock_transanction = StockTransanctions(user=user_profile, transaction_id=uuid_str, stock_symbol=params['stock_symbol'], 
+                                                    transaction_type='buy',stock_price = params['stock_price'], stock_price_date = params['stock_price_date'], stock_units=params['stock_units'], timestamp=timezone.now())
+            stock_transanction.save()
+            user_amount = float(user_amount) - float(stock_buy_amount)
+            user_account.amount = round(user_amount, 2)
+            user_account.save()
+            user_stock_portfolio = UserStockPortfolio.objects.filter(user = user_profile, stock_symbol=params['stock_symbol'])
+            if len(user_stock_portfolio) == 0:
+                portfolio_update = UserStockPortfolio(user = user_profile, stock_symbol=params['stock_symbol'], stock_units = params['stock_units'])
+                portfolio_update.save()
+                return JsonResponse({"response_code":200, "msg":"New stock successfully purchased."})
+            else:
+                for record in user_stock_portfolio:
+                    record.stock_units = float(record.stock_units) + float(params['stock_units'])
+                    record.save()
+                return JsonResponse({"response_code":200, "msg":"Stock Units updated with new purchased quantity."})
+        else:
+            return JsonResponse({"response_code":401, "msg":"Amount not enough to buy the number of stock units selected."})
+
+
+
+def get_stock_units(request):
+    if request.method == "GET":
+        user_profile = UserProfile.objects.get(user=request.user)
+        
+        user_stock_portfolio = UserStockPortfolio.objects.filter(user = user_profile, stock_symbol=request.GET.get('stock_symbol'))
+        print(user_stock_portfolio)
+        if len(user_stock_portfolio) == 0:
+            return JsonResponse({"msg":"Stock not found", "stock_units":0})
+        else:
+            for record in user_stock_portfolio:
+                return JsonResponse({"msg":"Stock found", "stock_units":record.stock_units})
+
+
 
 def get_ticker_details(request):
     if request.method == "POST":
         form = request.POST
         # if form.is_valid():
         stock_name = form.get('stockName').strip().upper()
-        ticker_details_endpoint_url = f"https://api.polygon.io/v3/reference/tickers/{stock_name}?apiKey=LnR21zv6euM7KmY_HafxN9XgwdnmltXE"
+        ticker_details_endpoint_url = f"https://api.polygon.io/v3/reference/tickers/{stock_name}?apiKey=UqR1AwHB4eIRO0pUzjG8IxuMlFHeJczI"
         response = requests.get(ticker_details_endpoint_url).json()
-        output_response = {'results':response['results']}
+        
+        output_response = {'results':json.dumps(response['results'])}
+        user_profile = UserProfile.objects.get(user=request.user)
+        user_stock_portfolio = UserStockPortfolio.objects.filter(user = user_profile, stock_symbol=stock_name)
+        for record in user_stock_portfolio:
+            if record.stock_units > 0:
+                output_response['sell_option'] = True
+            else:
+                output_response['sell_option'] = False
+            
         curr_date =  date.today()
         thirty_days_ago = curr_date - timedelta(days=30)
 
-        ticker_timeseries_endpoint_url = f"https://api.polygon.io/v2/aggs/ticker/AAPL/range/1/day/{thirty_days_ago}/{curr_date}?adjusted=true&sort=desc&limit=30&apiKey=LnR21zv6euM7KmY_HafxN9XgwdnmltXE"
+        ticker_timeseries_endpoint_url = f"https://api.polygon.io/v2/aggs/ticker/{stock_name}/range/1/day/{thirty_days_ago}/{curr_date}?adjusted=true&sort=desc&limit=30&apiKey=UqR1AwHB4eIRO0pUzjG8IxuMlFHeJczI"
         time_series_response = requests.get(ticker_timeseries_endpoint_url).json()['results']
         for val in time_series_response:
             val['t']=datetime.fromtimestamp(val['t']/1000).strftime('%Y-%m-%d')
@@ -39,7 +122,7 @@ def get_ticker_details(request):
         time_series_response = time_series_response[::-1]
         
         output_response['time_series'] = json.dumps(time_series_response)
-        output_response['latest_stock_price'] = latest_stock_price
+        output_response['latest_stock_price'] = json.dumps(latest_stock_price)
         return render(request, 'user/tickerDetails.html', output_response)
 
 
@@ -74,6 +157,11 @@ def signup(request):
         form = SignupForm()
         context = {'form': form}
         return render(request, "welcome/signup.html", context)
+
+def logout_view(request):
+    logout(request)
+    return render(request, "welcome/index.html")
+
 
 def login_view(request):
     if request.method == "POST":
