@@ -100,7 +100,6 @@ def get_ticker_details(request):
         # if form.is_valid():
         stock_name = form.get('stockName').strip().upper()
         ticker_details_endpoint_url = f"https://api.polygon.io/v3/reference/tickers/{stock_name}?apiKey=LnR21zv6euM7KmY_HafxN9XgwdnmltXE"
-        print(ticker_details_endpoint_url)
         response = requests.get(ticker_details_endpoint_url).json()
         
         output_response = {'results':json.dumps(response['results'])}
@@ -115,7 +114,7 @@ def get_ticker_details(request):
         curr_date =  date.today()
         thirty_days_ago = curr_date - timedelta(days=30)
 
-        ticker_timeseries_endpoint_url = f"https://api.polygon.io/v2/aggs/ticker/{stock_name}/range/1/day/{thirty_days_ago}/{curr_date}?adjusted=true&sort=desc&limit=30&apiKey=LnR21zv6euM7KmY_HafxN9XgwdnmltXE"
+        ticker_timeseries_endpoint_url = f"https://api.polygon.io/v2/aggs/ticker/{stock_name}/range/1/day/{thirty_days_ago}/{curr_date}?adjusted=true&sort=desc&limit=30&apiKey=UqR1AwHB4eIRO0pUzjG8IxuMlFHeJczI"
         time_series_response = requests.get(ticker_timeseries_endpoint_url).json()['results']
         for val in time_series_response:
             val['t']=datetime.fromtimestamp(val['t']/1000).strftime('%Y-%m-%d')
@@ -274,5 +273,3 @@ class LineChartJSONView(BaseLineChartView):
 
 line_chart = TemplateView.as_view(template_name='user/testchartjs.html')
 line_chart_json = LineChartJSONView.as_view()
-
-
