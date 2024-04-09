@@ -99,7 +99,7 @@ def get_ticker_details(request):
         form = request.POST
         # if form.is_valid():
         stock_name = form.get('stockName').strip().upper()
-        ticker_details_endpoint_url = f"https://api.polygon.io/v3/reference/tickers/{stock_name}?apiKey=LnR21zv6euM7KmY_HafxN9XgwdnmltXE"
+        ticker_details_endpoint_url = f"https://api.polygon.io/v3/reference/tickers/{stock_name}?apiKey=UqR1AwHB4eIRO0pUzjG8IxuMlFHeJczI"
         response = requests.get(ticker_details_endpoint_url).json()
         
         output_response = {'results':json.dumps(response['results'])}
