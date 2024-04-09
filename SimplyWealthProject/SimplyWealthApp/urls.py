@@ -14,7 +14,8 @@ urlpatterns = [
     path('get_ticker_details', views.get_ticker_details, name='get_ticker_details'),
     path('get_stock_units', views.get_stock_units, name='get_stock_units'),
     path('sell_stock', views.sell_stock, name='sell_stock'),
-    path('logout_view',views.logout_view, name='logout_view')
-    
+    path('logout_view',views.logout_view, name='logout_view'),
+    path('get-market-data', views.fetch_populated_data, name='fetch_market_data'),
+
 #    path("<str:username>/", views.userhome, name='userhome')
 ]

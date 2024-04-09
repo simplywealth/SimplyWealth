@@ -192,7 +192,24 @@ def userhome(request):
             user_profile = UserProfile.objects.get(user=request.user)
             user_transactions = Transaction.objects.filter(user=user_profile)
             total_amount= calculate_total(user_transactions)
-            return render(request, "user/userhome.html", {'user_profile': user_profile, 'user_total': total_amount})
+
+            # Fetch data for top gainers
+            top_gainers_data = TopDailyGainers.objects.order_by('-insert_time')[:5]
+
+            # Fetch data for top movers
+            top_movers_data = MostActivelyTraded.objects.order_by('-insert_time')[:5]
+
+            # Fetch data for 
+            top_losers_data = TopDailyLosers.objects.order_by('-insert_time')[:5]
+
+            # Fetch data for 
+            leader_board = Leaderboard.objects.order_by('-current_time')[:5]
+
+            return render(request, "user/userhome.html", {'user_profile': user_profile, 'user_total': total_amount, 
+                                'top_gainers': top_gainers_data,
+                                'top_movers': top_movers_data,
+                                'top_losers': top_losers_data,
+                                'leader_board': leader_board})
         except UserProfile.DoesNotExist:
             messages.error(request, "user profile not found.")
             return redirect('index')
@@ -216,11 +233,24 @@ def upload_profile_picture(request):
         form = ProfilePictureForm()
     return render(request, 'upload_profile_picture.html', {'form': form})
 
+from django.http import JsonResponse
 
-def test_charjs(request):
-    return render(request, "user/testchartjs.html")
+def fetch_populated_data(request):
+    print("HELLLLLO")
     
+    # Define fake data for debugging
+    fake_data = [
+        {"ticker": "AAPL", "price": 150.00, "change_amount": 2.50, "change_percentage": 1.5},
+        {"ticker": "GOOGL", "price": 2500.00, "change_amount": -10.50, "change_percentage": -0.5},
+        {"ticker": "MSFT", "price": 300.00, "change_amount": 5.00, "change_percentage": 2.0},
+        {"ticker": "AMZN", "price": 3500.00, "change_amount": -20.00, "change_percentage": -0.7},
+        {"ticker": "FB", "price": 300.00, "change_amount": 3.00, "change_percentage": 1.0},
+    ]
     
+    return JsonResponse({'data': fake_data})
+
+
+
 from django.views.generic import TemplateView
 from chartjs.views.lines import BaseLineChartView
 
