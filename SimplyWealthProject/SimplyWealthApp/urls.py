@@ -10,5 +10,6 @@ urlpatterns = [
     path('chart', line_chart, name='line_chart'),
     path('chartJSON', line_chart_json, name='line_chart_json'),
     path('upload-profile-picture/', views.upload_profile_picture, name='upload_profile_picture'),
-#    path("<str:username>/", views.userhome, name='userhome')
+    path('signout/', views.signout_view, name='signout'),
+    # path("<str:username>/", views.userhome, name='userhome')
 ]

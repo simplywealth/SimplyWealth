@@ -64,6 +64,15 @@ def login_view(request):
         context = {'form': form}
         return render(request, "welcome/login.html", context)
 ###
+from django.contrib.auth import logout
+from django.shortcuts import redirect
+from django.contrib import messages
+
+def signout_view(request):
+    logout(request)
+    messages.success(request, "You have been successfully signed out.")
+    return redirect(request, "welcome/index.html") # Redirect to the login page
+
 def calculate_total(user_transactions):
     return user_transactions.aggregate(total=Sum('amount'))['total']
 
