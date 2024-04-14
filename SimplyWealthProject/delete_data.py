@@ -17,9 +17,9 @@ Leaderboard.objects.all().delete()
 
 
 # Create a new instance of MyModel
-new_entry = Leaderboard(current_total='60', userid='cat3')
+new_entry = Leaderboard(current_total='-5%', userid='cat3')
 new_entry.save()
-new_entry = Leaderboard(current_total='0.01', userid='cat4')
+new_entry = Leaderboard(current_total='+0.01%', userid='cat4')
 new_entry.save()
-new_entry = Leaderboard(current_total='3000', userid='catadmin')
+new_entry = Leaderboard(current_total='+300%', userid='catadmin')
 new_entry.save()
