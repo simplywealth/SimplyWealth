@@ -63,7 +63,7 @@ class Leaderboard(models.Model):
 
 
 class TopDailyGainers(models.Model):
-    unique_key = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    unique_key = models.CharField(primary_key=True, max_length=36)  # Use CharField instead of UUIDField
     insert_time = models.DateTimeField(auto_now_add=True)
     date = models.DateField()
     ticker = models.CharField(max_length=20)  
@@ -73,7 +73,7 @@ class TopDailyGainers(models.Model):
 
 
 class MostActivelyTraded(models.Model):
-    unique_key = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    unique_key = models.CharField(primary_key=True, max_length=36)  # Use CharField instead of UUIDField
     insert_time = models.DateTimeField(auto_now_add=True)
     date = models.DateField()
     ticker = models.CharField(max_length=20)  
@@ -83,7 +83,7 @@ class MostActivelyTraded(models.Model):
 
 
 class TopDailyLosers(models.Model):
-    unique_key = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    unique_key = models.CharField(primary_key=True, max_length=36)  # Use CharField instead of UUIDField
     insert_time = models.DateTimeField(auto_now_add=True)
     date = models.DateField()
     ticker = models.CharField(max_length=20)  

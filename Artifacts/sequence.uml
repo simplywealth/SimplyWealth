@@ -1,0 +1,80 @@
+@startuml
+skinparam BoxPadding 75
+
+Actor User
+
+!pragma teoz true
+box "<< Simply Wealth>>" #LightBlue
+participant Author_Authen_srv
+participant MarketPerformance_srv
+participant UserPerformance_srv
+database UserProfileDB
+entity UserHomePage #99FF99
+entity StocksPage #EEEBDC
+database Transactions 
+database StockTransactions
+database UserStockPortfolio
+database MarketPerformance_DB
+database Leaderboard
+
+box "External API Services for Stock Information"
+participant polygo.io  << (p, #ADD1B2) >> 
+participant alphavantage.co  << (p, #ADD1B2) >> 
+
+rnote over User
+1) User flow or creating account and signing in
+endnote
+User -> UserProfileDB ++ #green: User creates an account 
+UserProfileDB -> Author_Authen_srv --++ #green: success message (201)
+Author_Authen_srv -> User --++#green: Redirects User to LoginPage 
+User -> UserHomePage --#green: Logs in with valid credentials 
+UserProfileDB -> UserHomePage: Fills in Bio and UserPhoto
+
+
+rnote over User
+2) User flow or Buying and Selling Stocks
+endnote
+User -> StocksPage ++#magenta: Searches for a stock
+StocksPage -> polygo.io --++#magenta: Requests for stock details 
+polygo.io -> StocksPage --#magenta: Returns the stock data 
+User -> StocksPage --++#magenta: Buys or Sells stock and amount
+StocksPage -> Transactions: Verify User has enough money
+StocksPage -> StockTransactions : records user actions 
+StocksPage -> UserStockPortfolio --#magenta: adds or remove stock from UserStockPortofolio
+
+rnote over MarketPerformance_srv
+3) Populate Market Details - Runs daily when market opens
+endnote
+loop runs daily
+MarketPerformance_srv -> alphavantage.co ++#gold: request market details - top gainers, losers, movers 
+alphavantage.co -> MarketPerformance_DB --++#gold: returns details 
+MarketPerformance_DB -> UserHomePage --#gold: populates Market Performance details in UserHomePage
+end loop 
+
+
+rnote over UserPerformance_srv
+4) Leaderboard Updates Weekly - calculate User ranking every week and display top 5
+ - total = current + stock$*stock_amt
+ - sort desc = ranking
+endnote
+loop runs for every User
+UserPerformance_srv -> UserStockPortfolio ++#blue: Get distinct stocks that users purchased
+loop runs for every stock
+UserStockPortfolio -> alphavantage.co --++#blue: Gets current price of stock 
+alphavantage.co -> UserStockPortfolio --#blue: Returns current price of stock 
+end loop
+UserPerformance_srv -> Leaderboard --++#blue: Calculate and rank users. store data in Leaderboard
+Leaderboard -> UserHomePage --#blue: Populates homepage with details of top 5 users
+end loop
+
+rnote over User
+5) Search for Users and Add as friend (WIIP)
+endnote
+User -> UserHomePage ++#red: User search for friends 
+UserHomePage -> UserProfileDB --#red: Shows available users
+
+
+end box
+end box
+
+@enduml
