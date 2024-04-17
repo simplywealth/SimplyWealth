@@ -2,7 +2,8 @@
 """Django's command-line utility for administrative tasks."""
 import os
 import sys
-
+import datetime as dt 
+import update_leaderboard as lb
 
 def main():
     """Run administrative tasks."""
@@ -17,6 +18,9 @@ def main():
         ) from exc
     execute_from_command_line(sys.argv)
 
+def check_date():
+    lb.main()
 
 if __name__ == "__main__":
+    check_date()
     main()

@@ -2,7 +2,7 @@ document.addEventListener("DOMContentLoaded", function(){
     document.getElementById('stockInp').addEventListener('keyup', function(){
         const val = document.getElementById('stockInp').value;
         if (val.length > 0){
-            fetch("https://api.polygon.io/v3/reference/tickers?search="+ val +"&active=true&limit=5&apiKey=LnR21zv6euM7KmY_HafxN9XgwdnmltXE")
+            fetch("https://api.polygon.io/v3/reference/tickers?search="+ val +"&active=true&limit=5&apiKey=UqR1AwHB4eIRO0pUzjG8IxuMlFHeJczI")
             .then(response => {
                 if (!response.ok) {
                     throw new Error('Network response was not ok');
