@@ -120,7 +120,6 @@ def get_ticker_details(request):
             val['t']=datetime.fromtimestamp(val['t']/1000).strftime('%Y-%m-%d')
         latest_stock_price = time_series_response[0]
         time_series_response = time_series_response[::-1]
-        print("time_series_response:",time_series_response)
         output_response['time_series'] = json.dumps(time_series_response)
         output_response['latest_stock_price'] = json.dumps(latest_stock_price)
         return render(request, 'user/tickerDetails.html', output_response)
@@ -210,19 +209,26 @@ def userhome(request):
             user_stocks = dict()
             for instance in user_portfolio:
                 user_stocks[instance.stock_symbol] = instance.stock_units
-                # break
             user_stock_prices = {'portfolio':None}
             date_iter = 1
-            dates_list = list()
-            while len(dates_list) < 5:
+            while len(user_portfolio_perfomance["dates"]) < 5:
                 temp_date = curr_date - timedelta(days=date_iter)
                 if temp_date.weekday() < 5:
-                    dates_list.append(temp_date)
+                    user_portfolio_perfomance["dates"].append(temp_date.strftime('%Y-%m-%d'))
                 date_iter += 1
-            dates_list = dates_list[::-1]
-            for week_date in dates_list:
-                # print(week_date.strftime('%Y-%m-%d'))
-                user_portfolio_perfomance["dates"].append(week_date.strftime('%Y-%m-%d'))
+
+            user_portfolio_perfomance["dates"] = user_portfolio_perfomance["dates"][::-1]
+
+            user_stock_graph_data = dict()
+
+            for user_stock, stock_units in user_stocks.items():
+                api_url = f"https://api.polygon.io/v2/aggs/ticker/{user_stock}/range/1/day/{user_portfolio_perfomance["dates"][0]}/{user_portfolio_perfomance["dates"][-1]}?adjusted=true&sort=asc&apiKey=UqR1AwHB4eIRO0pUzjG8IxuMlFHeJczI"
+                api_resp = requests.get(api_url).json()['results']
+                user_stock_graph_data[user_stock] = [x['c'] for x in api_resp]
+
+
+
+            for n in range(5):
                 prev_day_portfol_price = user_stock_prices['portfolio']
                 curr_day_portfol_price = 0
                 for user_stock, stock_units in user_stocks.items():
@@ -230,9 +236,7 @@ def userhome(request):
                         prev_day_price = user_stock_prices[user_stock]
                     else:
                         prev_day_price = None
-                    api_url = f"https://api.polygon.io/v1/open-close/{user_stock}/{week_date}?adjusted=true&apiKey=UqR1AwHB4eIRO0pUzjG8IxuMlFHeJczI"
-                    api_resp = requests.get(api_url).json()
-                    temp_close_price = api_resp['close']
+                    temp_close_price = user_stock_graph_data[user_stock][n]
                     curr_day_portfol_price += temp_close_price
                     if prev_day_price is None:
                         profit_loss_percent = 0
@@ -246,25 +250,16 @@ def userhome(request):
                         pass
                     else:
                         user_stock_prices[user_stock] = temp_close_price
-                    # user_stock_prices[user_stock] = temp_close_price
                 if prev_day_portfol_price is None:
                     portfol_profit_losss_percent = 0
                 else:
                     portfol_profit_losss_percent = ((curr_day_portfol_price - prev_day_portfol_price)/prev_day_portfol_price) * 100
                 user_stock_prices['portfolio'] = curr_day_portfol_price
                 user_portfolio_perfomance['stocks']['portfolio'].append(portfol_profit_losss_percent)
-            # print("user_portfolio_perfomance:",user_portfolio_perfomance)
+                    
 
 
-
-            
-            # user_stock = list()
-            # for instance in user_portfolio:
-            #     user_stock.append(instance.stock_symbol)
-            #     print(instance.stock_symbol)
-            #     print(StockTransanctions.objects.filter(user=user_profile, stock_symbol=instance.stock_symbol, timestamp__gte=seven_days_ago).order_by('timestamp'))
-            
-
+       
             return render(request, "user/userhome.html", {'user_profile': user_profile, 'user_total': total_amount, 
                                 'top_gainers': top_gainers_data,
                                 'top_movers': top_movers_data,
@@ -277,7 +272,6 @@ def userhome(request):
     else:
         messages.error(request, "please login first.")
         return redirect('login_view')
-#    return render(request, "user/userhome.html", {'username':request.user})
 
 
 def upload_profile_picture(request):
