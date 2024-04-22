@@ -19,6 +19,7 @@ import json
 def index(request):
     return render(request, "welcome/index.html")
 
+
 def sell_stock(request):
     if request.method == "POST":
         user_profile = UserProfile.objects.get(user=request.user)
@@ -188,6 +189,7 @@ def calculate_total(user_transactions):
 
 def userhome(request):
     if request.user.is_authenticated:
+        print('here- successful')
         try:
             user_profile = UserProfile.objects.get(user=request.user)
             user_transactions = Transaction.objects.filter(user=user_profile)
@@ -204,7 +206,8 @@ def userhome(request):
 
             # Fetch data for 
             leader_board = Leaderboard.objects.order_by('-current_time')[:5]
-
+            print('hello here')
+            
             return render(request, "user/userhome.html", {'user_profile': user_profile, 'user_total': total_amount, 
                                 'top_gainers': top_gainers_data,
                                 'top_movers': top_movers_data,
