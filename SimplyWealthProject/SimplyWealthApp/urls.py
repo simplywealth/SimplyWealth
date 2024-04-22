@@ -18,5 +18,4 @@ urlpatterns = [
     path('logout_view',views.logout_view, name='logout_view'),
     path('get-market-data', views.fetch_populated_data, name='fetch_market_data'),
 
-#    path("<str:username>/", views.userhome, name='userhome')
 ]
