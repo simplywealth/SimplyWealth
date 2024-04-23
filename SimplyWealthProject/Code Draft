@@ -421,3 +421,105 @@ def generate_html_diagram():
 
 if __name__ == "__main__":
     generate_html_diagram()
+
+
+<!Search and Add Friends html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Search and Add Friends</title>
+</head>
+<body>
+    <h1>Search and Add Friends</h1>
+
+    <h2>Search Friends</h2>
+    <input type="text" id="searchInput" onkeyup="searchFriends()" placeholder="Enter friend's name...">
+    <div id="searchResults"></div>
+
+    <h2>Add Friends</h2>
+    <input type="text" id="addInput" placeholder="Enter friend's name...">
+    <button onclick="addFriend()">Add Friend</button>
+
+    <h2>All Friends</h2>
+    <ul id="friendsList">
+    </ul>
+    <script>
+        function searchFriends() {
+            var input, filter, ul, li, a, i, txtValue;
+            input = document.getElementById('searchInput');
+            filter = input.value.toUpperCase();
+            ul = document.getElementById("friendsList");
+            li = ul.getElementsByTagName('li');
+            
+            for (i = 0; i < li.length; i++) {
+                a = li[i].getElementsByTagName("a")[0];
+                txtValue = a.textContent || a.innerText;
+                if (txtValue.toUpperCase().indexOf(filter) > -1) {
+                    li[i].style.display = "";
+                } else {
+                    li[i].style.display = "none";
+                }
+            }
+        }
+
+        function addFriend() {
+            var friendName = document.getElementById("addInput").value.trim();
+            if (friendName) {
+                appendFriendToHTML(friendName);
+                alert(friendName + " added as a friend.");
+                document.getElementById("addInput").value = "";
+            } else {
+                alert("Please enter a friend's name.");
+            }
+        }
+
+        function appendFriendToHTML(friendName) {
+            var ul = document.getElementById("friendsList");
+            var li = document.createElement("li");
+            var a = document.createElement("a");
+            a.appendChild(document.createTextNode(friendName));
+            li.appendChild(a);
+            ul.appendChild(li);
+        }
+
+        function populateFriendsList() {
+            fetch('model.py')
+            .then(response => response.text())
+            .then(data => {
+                var friendsList = document.getElementById("friendsList");
+                var friendsStartIndex = data.indexOf("<ul>") + 4;
+                var friendsEndIndex = data.indexOf("</ul>");
+                var friendsHTML = data.substring(friendsStartIndex, friendsEndIndex);
+                friendsList.innerHTML = friendsHTML;
+            });
+        }
+        
+        window.onload = populateFriendsList;
+    </script>
+</body>
+</html>
+
+##Search and Add Friends .py file
+from http.server import BaseHTTPRequestHandler, HTTPServer
+class RequestHandler(BaseHTTPRequestHandler):
+    def do_GET(self):
+        if self.path == '/':
+            self.path = 'index.html'
+        try:
+            file_to_open = open(self.path[1:]).read()
+            self.send_response(200)
+        except:
+            file_to_open = "File not found"
+            self.send_response(404)
+        
+        self.end_headers()
+        self.wfile.write(bytes(file_to_open, 'utf-8'))
+def run(server_class=HTTPServer, handler_class=RequestHandler, port=8000):
+    server_address = ('', port)
+    httpd = server_class(server_address, handler_class)
+    print(f'Starting server on port {port}')
+    httpd.serve_forever()
+if __name__ == "__main__":
+    run()
+
