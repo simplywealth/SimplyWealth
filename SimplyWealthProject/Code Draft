@@ -523,3 +523,154 @@ def run(server_class=HTTPServer, handler_class=RequestHandler, port=8000):
 if __name__ == "__main__":
     run()
 
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Search and Add Friends</title>
+</head>
+<body>
+    <h1>Search and Add Friends</h1>
+
+    <!-- Search Friends Section -->
+    <h2>Search Friends</h2>
+    <input type="text" id="searchInput" onkeyup="searchFriends()" placeholder="Enter friend's name...">
+    <div id="searchResults"></div>
+
+    <!-- Add Friends Section -->
+    <h2>Add Friends</h2>
+    <input type="text" id="addInput" placeholder="Enter friend's name...">
+    <button onclick="addFriend()">Add Friend</button>
+
+    <!-- Display Friends Section -->
+    <h2>All Friends</h2>
+    <ul id="friendsList">
+        <!-- Friends list will be dynamically populated -->
+    </ul>
+
+    <!-- Script to dynamically populate friends list and handle AJAX requests -->
+    <script>
+        // Function to search friends
+        function searchFriends() {
+            var input, filter, ul, li, a, i, txtValue;
+            input = document.getElementById('searchInput');
+            filter = input.value.toUpperCase();
+            ul = document.getElementById("friendsList");
+            li = ul.getElementsByTagName('li');
+            
+            for (i = 0; i < li.length; i++) {
+                a = li[i].getElementsByTagName("a")[0];
+                txtValue = a.textContent || a.innerText;
+                if (txtValue.toUpperCase().indexOf(filter) > -1) {
+                    li[i].style.display = "";
+                } else {
+                    li[i].style.display = "none";
+                }
+            }
+        }
+
+        // Function to add friend
+        function addFriend() {
+            var friendName = document.getElementById("addInput").value.trim();
+            if (friendName) {
+                fetch('/add_friend/', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRFToken': getCookie('csrftoken')
+                    },
+                    body: JSON.stringify({'friend_name': friendName})
+                })
+                .then(response => response.json())
+                .then(data => {
+                    alert(data.message);
+                    populateFriendsList();
+                });
+                // Optionally, you can clear the input field after adding the friend
+                document.getElementById("addInput").value = "";
+            } else {
+                alert("Please enter a friend's name.");
+            }
+        }
+
+        // Function to dynamically populate friends list
+        function populateFriendsList() {
+            fetch('/search_friends/', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': getCookie('csrftoken')
+                },
+                body: JSON.stringify({'search_name': ''})
+            })
+            .then(response => response.json())
+            .then(data => {
+                var friendsList = document.getElementById("friendsList");
+                friendsList.innerHTML = '';
+                data.matching_friends.forEach(friend => {
+                    var li = document.createElement("li");
+                    var a = document.createElement("a");
+                    a.appendChild(document.createTextNode(friend));
+                    li.appendChild(a);
+                    friendsList.appendChild(li);
+                });
+            });
+        }
+
+        // Function to get CSRF token from cookie
+        function getCookie(name) {
+            var cookieValue = null;
+            if (document.cookie && document.cookie !== '') {
+                var cookies = document.cookie.split(';');
+                for (var i = 0; i < cookies.length; i++) {
+                    var cookie = cookies[i].trim();
+                    // Does this cookie string begin with the name we want?
+                    if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                        break;
+                    }
+                }
+            }
+            return cookieValue;
+        }
+
+        // Populate friends list when the page loads
+        window.onload = populateFriendsList;
+    </script>
+</body>
+</html>
+
+from django.db import models
+
+class User(models.Model):
+    name = models.CharField(max_length=100)
+
+    def __str__(self):
+        return self.name
+from django.urls import path
+from . import views
+
+urlpatterns = [
+    path('search_friends/', views.search_friends, name='search_friends'),
+    path('add_friend/', views.add_friend, name='add_friend'),
+]
+from django.shortcuts import render
+from django.http import JsonResponse
+from .models import User
+
+def search_friends(request):
+    if request.method == 'POST':
+        search_name = request.POST.get('search_name', '')
+        matching_friends = list(User.objects.filter(name__icontains=search_name).values_list('name', flat=True))
+        return JsonResponse({'matching_friends': matching_friends})
+    return JsonResponse({})
+
+def add_friend(request):
+    if request.method == 'POST':
+        friend_name = request.POST.get('friend_name', '')
+        new_friend = User.objects.create(name=friend_name)
+        return JsonResponse({'message': f'{friend_name} added as a friend.'})
+    return JsonResponse({})
+
+
