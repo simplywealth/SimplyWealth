@@ -33,6 +33,7 @@ ALLOWED_HOSTS = []
 
 
 # Application definition
+SITE_ID = 3
 
 INSTALLED_APPS = [
     "django.contrib.admin",
@@ -43,7 +44,22 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     "SimplyWealthApp",
     'chartjs',
+    "django.contrib.sites",
+    "allauth",
+    "allauth.account",
+    "allauth.socialaccount",
+    "allauth.socialaccount.providers.google"
 ]
+
+SOCIALACCOUNT_PROVIDERS={
+    "google": {
+        "SCOPE": [
+            "profile",
+            "email"
+        ],
+        "AUTH_PARAMS": {"access_type": "online"}
+    }
+}
 
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
@@ -53,6 +69,7 @@ MIDDLEWARE = [
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
+    "allauth.account.middleware.AccountMiddleware"
 ]
 
 ROOT_URLCONF = "SimplyWealthProject.urls"
@@ -133,3 +150,12 @@ MEDIA_URL = '/profile_pictures/'
 # https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
+
+
+AUTHENTICATION_BACKENDS = (
+    "django.contrib.auth.backends.ModelBackend",
+    "allauth.account.auth_backends.AuthenticationBackend"
+)
+
+LOGIN_REDIRECT_URL = '/app/userhome/'
+LOGOUT_REDIRECT_URL="/app"

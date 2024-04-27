@@ -6,6 +6,7 @@ urlpatterns = [
     path("", views.index, name='index'),
     path("signup/", views.signup, name='signup'),
     path("login_view/", views.login_view, name='login_view'),
+    path("logout", views.logout_view),
     path('userhome/', views.userhome, name='userhome'),
     path('chart', line_chart, name='line_chart'),
     path('chartJSON', line_chart_json, name='line_chart_json'),
@@ -17,5 +18,4 @@ urlpatterns = [
     path('logout_view',views.logout_view, name='logout_view'),
     path('get-market-data', views.fetch_populated_data, name='fetch_market_data'),
 
-#    path("<str:username>/", views.userhome, name='userhome')
 ]

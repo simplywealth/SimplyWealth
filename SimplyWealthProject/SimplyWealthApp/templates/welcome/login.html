@@ -9,11 +9,13 @@
 </head>
 <body>
     <div class="login-container">
-        <h1>Login</h1>
+        <h2>App Login</h2>
         <form class="login-form" method="post">
             {% csrf_token %}
             {{ form.as_p }}
-            <button type="submit">Login</button>
+            <button type="submit"> App Login</button>
+            {% load socialaccount %}
+            <button type="button" onclick="location.href='{% provider_login_url 'google' %}?next=/app/userhome/'">Login with Google Auth</button>
         </form>
     </div>
 </body>

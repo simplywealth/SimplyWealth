@@ -30,7 +30,7 @@
             <label for="confirm_password">Confirm Password:</label>
             <input type="password" id="password2" name="password2" required placeholder="*********">
 
-            <button type="submit">Sign Up</button>
+            <button type="submit">App Sign-Up</button>
 
             {% if messages %}
             <ul class="messages">
@@ -39,6 +39,10 @@
                 {% endfor %}
             </ul>
             {% endif %}
+
+            {% load socialaccount %}
+            <button type="button" onclick="location.href='{% provider_login_url 'google' %}?next=/app/userhome/'">Sign-Up with Google Auth</button>
+
         </form>
         <footer>
             <select>

@@ -92,3 +92,19 @@ html, body {
   .login-form button[type="submit"]:hover {
     background-color: #3c78d8; 
   }
+
+
+button {
+    background-color: #4285f4; /* Google's blue color */
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    width: 100%; /* Full width for better mobile responsiveness */
+    margin-top: 10px; /* Space between buttons */
+}
+
+button:hover {
+    background-color: #357ae8; /* Darker blue on hover */
+}

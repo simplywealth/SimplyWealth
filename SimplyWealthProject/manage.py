@@ -18,9 +18,9 @@ def main():
         ) from exc
     execute_from_command_line(sys.argv)
 
-def check_date():
-    lb.main()
+# def check_date():
+#     lb.main()
 
 if __name__ == "__main__":
-    check_date()
+    # check_date()
     main()
