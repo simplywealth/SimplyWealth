@@ -54,12 +54,10 @@ class StocksPriceHistory(models.Model):
         return f"{self.current_time}--{self.tick_symbol}-{self.market_value}"
 
 
-class Leaderboard(models.Model):
-    unique_key = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
-    current_time = models.DateField(auto_now_add=True) 
+class Leaderboard_Weekly(models.Model):
+    currenttime = models.DateField(auto_now_add=True) 
     userid = models.CharField(max_length=30)
     current_total=models.DecimalField(max_digits=10, decimal_places=2)
-
 
 
 class TopDailyGainers(models.Model):

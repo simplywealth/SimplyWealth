@@ -128,9 +128,6 @@ def get_ticker_details(request):
 
 
 
-
-
-
 ## SIGNUP AND LOGIN - ACCOUNTS PAGE
 def signup(request):
     if request.method == "POST":
@@ -205,10 +202,11 @@ def userhome(request):
             top_losers_data = TopDailyLosers.objects.order_by('-insert_time')[:5]
 
             # Fetch data for 
-            leader_board = Leaderboard.objects.order_by('-current_time')[:5]
+            leader_board = Leaderboard_Weekly.objects.order_by('-current_total')[:5]
             print('hello here')
             
-            return render(request, "user/userhome.html", {'user_profile': user_profile, 'user_total': total_amount, 
+            return render(request, "user/userhome.html", {'user_profile': user_profile, 
+                                'user_total': total_amount, 
                                 'top_gainers': top_gainers_data,
                                 'top_movers': top_movers_data,
                                 'top_losers': top_losers_data,
@@ -236,21 +234,55 @@ def upload_profile_picture(request):
         form = ProfilePictureForm()
     return render(request, 'upload_profile_picture.html', {'form': form})
 
-from django.http import JsonResponse
 
-def fetch_populated_data(request):
-    print("HELLLLLO")
+
+def add_bio(request):
+    if request.method == 'POST':
+        text = request.POST.get('bio')
+        # Assuming the user is logged in and you have access to the user object
+        user_profile = UserProfile.objects.get(user=request.user)
+        user_profile.text = text
+        user_profile.save()
+        return redirect('userhome')  # Redirect to profile view page
+    else:
+        return render(request, 'notfound_page.html')  # Handle GET request
+
+
+def leaderboard_users(request, user_id):
+    try:
+        # Fetch the user object based on the provided username
+        user = User.objects.get(pk=user_id)
+        # Assuming you have a UserProfile model associated with the User model
+        user_profile = user.userprofile  # Replace 'userprofile' with your actual UserProfile model field name
+        
+        user_stock_portfolios = UserStockPortfolio.objects.filter(user=user_profile)
+        context = {
+            'user': user,
+            'user_profile': user_profile,
+            'stocks':user_stock_portfolios
+            }
+        return render(request, 'user/leaderboard_users.html', context)
+    except User.DoesNotExist:
+        # Handle the case where the user does not exist
+        return render(request, 'user/notfound_page.html')
+
+
+
+# from django.http import JsonResponse
+
+# # def fetch_populated_data(request):
+# #     print("HELLLLLO")
     
-    # Define fake data for debugging
-    fake_data = [
-        {"ticker": "AAPL", "price": 150.00, "change_amount": 2.50, "change_percentage": 1.5},
-        {"ticker": "GOOGL", "price": 2500.00, "change_amount": -10.50, "change_percentage": -0.5},
-        {"ticker": "MSFT", "price": 300.00, "change_amount": 5.00, "change_percentage": 2.0},
-        {"ticker": "AMZN", "price": 3500.00, "change_amount": -20.00, "change_percentage": -0.7},
-        {"ticker": "FB", "price": 300.00, "change_amount": 3.00, "change_percentage": 1.0},
-    ]
+# #     # Define fake data for debugging
+# #     fake_data = [
+# #         {"ticker": "AAPL", "price": 150.00, "change_amount": 2.50, "change_percentage": 1.5},
+# #         {"ticker": "GOOGL", "price": 2500.00, "change_amount": -10.50, "change_percentage": -0.5},
+# #         {"ticker": "MSFT", "price": 300.00, "change_amount": 5.00, "change_percentage": 2.0},
+# #         {"ticker": "AMZN", "price": 3500.00, "change_amount": -20.00, "change_percentage": -0.7},
+# #         {"ticker": "FB", "price": 300.00, "change_amount": 3.00, "change_percentage": 1.0},
+# #     ]
     
-    return JsonResponse({'data': fake_data})
+# #     return JsonResponse({'data': fake_data})
 
 
 
