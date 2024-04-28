@@ -92,32 +92,36 @@ def get_ticker_details(request):
     if request.method == "POST":
         form = request.POST
         # if form.is_valid():
-        stock_name = form.get('stockName').strip().upper()
-        ticker_details_endpoint_url = f"https://api.polygon.io/v3/reference/tickers/{stock_name}?apiKey=UqR1AwHB4eIRO0pUzjG8IxuMlFHeJczI"
-        response = requests.get(ticker_details_endpoint_url).json()
-        
-        output_response = {'results':json.dumps(response['results'])}
-        user_profile = UserProfile.objects.get(user=request.user)
-        user_stock_portfolio = UserStockPortfolio.objects.filter(user = user_profile, stock_symbol=stock_name)
-        for record in user_stock_portfolio:
-            if record.stock_units > 0:
-                output_response['sell_option'] = True
-            else:
-                output_response['sell_option'] = False
+        try:
+            stock_name = form.get('stockName').strip().upper()
+            ticker_details_endpoint_url = f"https://api.polygon.io/v3/reference/tickers/{stock_name}?apiKey=UqR1AwHB4eIRO0pUzjG8IxuMlFHeJczI"
+            response = requests.get(ticker_details_endpoint_url).json()
             
-        curr_date =  date.today()
-        thirty_days_ago = curr_date - timedelta(days=30)
+            output_response = {'results':json.dumps(response['results'])}
+            user_profile = UserProfile.objects.get(user=request.user)
+            user_stock_portfolio = UserStockPortfolio.objects.filter(user = user_profile, stock_symbol=stock_name)
+            for record in user_stock_portfolio:
+                if record.stock_units > 0:
+                    output_response['sell_option'] = True
+                else:
+                    output_response['sell_option'] = False
+                
+            curr_date =  date.today()
+            thirty_days_ago = curr_date - timedelta(days=30)
 
-        ticker_timeseries_endpoint_url = f"https://api.polygon.io/v2/aggs/ticker/{stock_name}/range/1/day/{thirty_days_ago}/{curr_date}?adjusted=true&sort=desc&limit=30&apiKey=UqR1AwHB4eIRO0pUzjG8IxuMlFHeJczI"
-        time_series_response = requests.get(ticker_timeseries_endpoint_url).json()['results']
-        for val in time_series_response:
-            val['t']=datetime.fromtimestamp(val['t']/1000).strftime('%Y-%m-%d')
-        latest_stock_price = time_series_response[0]
-        time_series_response = time_series_response[::-1]
-        
-        output_response['time_series'] = json.dumps(time_series_response)
-        output_response['latest_stock_price'] = json.dumps(latest_stock_price)
-        return render(request, 'user/tickerDetails.html', output_response)
+            ticker_timeseries_endpoint_url = f"https://api.polygon.io/v2/aggs/ticker/{stock_name}/range/1/day/{thirty_days_ago}/{curr_date}?adjusted=true&sort=desc&limit=30&apiKey=UqR1AwHB4eIRO0pUzjG8IxuMlFHeJczI"
+            time_series_response = requests.get(ticker_timeseries_endpoint_url).json()['results']
+            for val in time_series_response:
+                val['t']=datetime.fromtimestamp(val['t']/1000).strftime('%Y-%m-%d')
+            latest_stock_price = time_series_response[0]
+            time_series_response = time_series_response[::-1]
+            
+            output_response['time_series'] = json.dumps(time_series_response)
+            output_response['latest_stock_price'] = json.dumps(latest_stock_price)
+            return render(request, 'user/tickerDetails.html', output_response)
+        except Exception:
+            return render(request, "misc/notfound_page.html")
+
 
 ## SIGNUP AND LOGIN - ACCOUNTS PAGE
 def signup(request):
@@ -250,7 +254,7 @@ def leaderboard_users(request, user_id):
             'stocks':user_stock_portfolios
             }
         return render(request, 'user/leaderboard_users.html', context)
-    except User.DoesNotExist:
+    except Exception:
         # Handle the case where the user does not exist
         return render(request, 'misc/hidden_user.html')
 

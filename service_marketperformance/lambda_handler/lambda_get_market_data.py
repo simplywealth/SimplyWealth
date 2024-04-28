@@ -1,3 +1,4 @@
+
 import requests
 import os
 import logging
@@ -5,6 +6,7 @@ import sys
 import pymysql
 from datetime import datetime
 import uuid
+import json
 pymysql.version_info = (1, 4, 6, 'final', 0)
 pymysql.install_as_MySQLdb()
 
@@ -109,7 +111,6 @@ class MarketStocksDetails:
         self.update_mysql_rds(results)
 
 
-MarketStocksDetails().start_process()
 
 
 # Call the function to connect
