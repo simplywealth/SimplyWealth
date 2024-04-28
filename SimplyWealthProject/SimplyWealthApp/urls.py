@@ -1,6 +1,7 @@
 from django.urls import path 
 from . import views
 from .views import line_chart, line_chart_json
+# from .views import leaderboard_users
 
 urlpatterns = [
     path("", views.index, name='index'),
@@ -16,6 +17,11 @@ urlpatterns = [
     path('get_stock_units', views.get_stock_units, name='get_stock_units'),
     path('sell_stock', views.sell_stock, name='sell_stock'),
     path('logout_view',views.logout_view, name='logout_view'),
-    path('get-market-data', views.fetch_populated_data, name='fetch_market_data'),
+    # path('get-market-data', views.fetch_populated_data, name='fetch_market_data'),
+    path('leaderboard_users/<int:user_id>/', views.leaderboard_users, name='leaderboard_users'),
+    path('add_bio/', views.add_bio, name="add_bio"),
+    path('company_info/', views.company_info, name="company_info"),
+    path('info/', views.info, name="info"),
+    path('contact/', views.contact, name="contact")
 
 ]

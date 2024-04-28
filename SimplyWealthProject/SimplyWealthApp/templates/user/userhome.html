@@ -19,11 +19,17 @@
 
         <nav class="navbar">
             <ul>
-                <li><a href="#">Company</a></li>
-                <li><a href="#">Blog</a></li>
-                <li><a href="#">Contact</a></li>
+                <li><a href="{% url 'company_info' %}">Company</a></li>
+                <li><a href="{% url 'info' %}">Info</a></li>
+                <li><a href="{% url 'contact' %}">Contact</a></li>
             </ul>
         </nav>
+        <div id="user-settings">
+            <form action="{% url 'logout_view' %}" method="post">
+                {% csrf_token %}
+                <button type="submit" >signout</button>
+            </form>
+        </div>
     </header>
     <div class="grid-container">
 
@@ -38,7 +44,6 @@
                     {% else %}
                         <img src="{% static 'img/test.png' %}" alt="Default Profile">
                     {% endif %}
-                </div>
                 <!-- Form for uploading profile picture -->
                 <form method="post" action="{% url 'upload_profile_picture' %}" enctype="multipart/form-data">
                     {% csrf_token %}
@@ -46,12 +51,29 @@
                     <input type="file" id="fileInput" name="profile_picture">
                     <button type="submit" class="button-style">Upload</button>
                 </form>
-
-                <div id="biography">
-                    <h2> BIOGRAPHY
-                        <span> Add a Bio description! What do you like? What do you do? </span>
-                    </h2>
                 </div>
+
+                <div>
+                    <p>{{user_profile.text}}</p>
+                    <button id="bioBtn" class="button-style" onclick="showBioForm()">Add/Edit Bio</button>
+                    <!-- Bio Form (Initially Hidden) -->
+                    <div id="bioForm" style="display: none;">
+                    <form method="post" action="{% url 'add_bio' %}">
+                        {% csrf_token %}
+                        <textarea name="bio" rows="4" cols="30">{% if user_profile.text %}{{ user_profile.text }}{% endif %}</textarea>
+                        <br>
+                        <button type="submit" class="button-style">Save</button>
+                    </form>
+                    </div>
+                    
+                    <script>
+                    function showBioForm() {
+                        var bioForm = document.getElementById("bioForm");
+                        bioForm.style.display = "block";
+                    }
+                    </script>
+                </div>
+                
             </div>
             <div id="account-details">
                 <h2> Account</h2>
@@ -72,7 +94,7 @@
                             {% for leader in leader_board %}
                             <tr>
                                 <td>{{forloop.counter}}</td>
-                                <td>{{leader.userid}}</td>
+                                <td><a href="{% url 'leaderboard_users' leader.userid %}">{{ leader.userid }}</a></td>
                                 <td>{{leader.current_total}}</td>
                             </tr>
                             {% endfor %} 
@@ -92,12 +114,6 @@
                         });
                     });
                 </script>
-            </div>
-            <div id="user-settings">
-                <form action="{% url 'logout_view' %}" method="post">
-                    {% csrf_token %}
-                    <button type="submit">signout</button>
-                </form>
             </div>
         </aside>
 

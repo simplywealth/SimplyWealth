@@ -1,0 +1,36 @@
+{% load static %}
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title id="title"></title>
+    <link rel="stylesheet" href="{% static 'css/leaderboard_users.css' %}">
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+</head>
+<body>
+    <div class="container">
+        <p></p><img src="{{user_profile.profile_picture.url}}" alt="Profile Picture"><p>
+        <p></p><h1>{{user.username}}</h1></p>
+        <p><strong>User ID:</strong> {{user_profile.user.id}}</p>
+        <p><strong>Bio:</strong> {{user_profile.text}}</p>
+        <p>Portfolio</p>
+        <table>
+            <thead>
+                <tr>
+                    <th>Stock Symbol</th>
+                    <th>Units Purchased</th>
+                </tr>
+            </thead>
+            <tbody id="stocks-body">
+                    {% for stock in stocks %}
+                    <tr>
+                        <td>{{stock.stock_symbol }}</a></td>
+                        <td>{{stock.stock_units}}</td>
+                    </tr>
+                    {% endfor %} 
+            </tbody>
+        </table>
+    </div>
+</body>
+</html>

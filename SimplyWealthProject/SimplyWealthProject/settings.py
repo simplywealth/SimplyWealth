@@ -33,7 +33,7 @@ ALLOWED_HOSTS = []
 
 
 # Application definition
-SITE_ID = 3
+SITE_ID = 4
 
 INSTALLED_APPS = [
     "django.contrib.admin",
@@ -57,7 +57,10 @@ SOCIALACCOUNT_PROVIDERS={
             "profile",
             "email"
         ],
-        "AUTH_PARAMS": {"access_type": "online"}
+        "AUTH_PARAMS": {"access_type": "online"
+        },
+        'CLIENT_ID': '048133925355-phr7otq8600me9vej8fkroe2su4ecpfa.apps.googleusercontent.com',
+        'SECRET': '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'
     }
 }
 
