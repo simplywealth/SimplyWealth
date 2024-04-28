@@ -39,13 +39,13 @@ body, html {
 
 table {
     width: 100%;
-    border-collapse: collapse; /* Collapse borders */
+    border-collapse: collapse; 
 }
 th, td {
-    border: 1px solid #ddd; /* Add border */
-    padding: 8px; /* Add padding */
-    text-align: left; /* Left align text */
+    border: 1px solid #ddd; 
+    padding: 8px; 
+    text-align: left; 
 }
 th {
-    background-color: #0e1977; /* Light gray background for headers */
+    background-color: #0e1977; 
 }
