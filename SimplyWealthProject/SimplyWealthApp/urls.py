@@ -19,5 +19,9 @@ urlpatterns = [
     path('logout_view',views.logout_view, name='logout_view'),
     # path('get-market-data', views.fetch_populated_data, name='fetch_market_data'),
     path('leaderboard_users/<int:user_id>/', views.leaderboard_users, name='leaderboard_users'),
-    path('add_bio/', views.add_bio, name="add_bio")
+    path('add_bio/', views.add_bio, name="add_bio"),
+    path('company_info/', views.company_info, name="company_info"),
+    path('info/', views.info, name="info"),
+    path('contact/', views.contact, name="contact")
+
 ]

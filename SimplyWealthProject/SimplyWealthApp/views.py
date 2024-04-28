@@ -19,7 +19,6 @@ import json
 def index(request):
     return render(request, "welcome/index.html")
 
-
 def sell_stock(request):
     if request.method == "POST":
         user_profile = UserProfile.objects.get(user=request.user)
@@ -47,8 +46,6 @@ def sell_stock(request):
         user_account.save()
         return JsonResponse({"response_code":200, "msg":"Successfully sold stock units."})
         
-
-
 
 def buy_stock(request):
     if request.method == "POST":
@@ -79,8 +76,6 @@ def buy_stock(request):
         else:
             return JsonResponse({"response_code":401, "msg":"Amount not enough to buy the number of stock units selected."})
 
-
-
 def get_stock_units(request):
     if request.method == "GET":
         user_profile = UserProfile.objects.get(user=request.user)
@@ -92,8 +87,6 @@ def get_stock_units(request):
         else:
             for record in user_stock_portfolio:
                 return JsonResponse({"msg":"Stock found", "stock_units":record.stock_units})
-
-
 
 def get_ticker_details(request):
     if request.method == "POST":
@@ -126,8 +119,6 @@ def get_ticker_details(request):
         output_response['latest_stock_price'] = json.dumps(latest_stock_price)
         return render(request, 'user/tickerDetails.html', output_response)
 
-
-
 ## SIGNUP AND LOGIN - ACCOUNTS PAGE
 def signup(request):
     if request.method == "POST":
@@ -150,7 +141,7 @@ def signup(request):
             for error_list in error_messages:
                 for error in error_list:
                     messages.error(request, error)
-            return render(request, "welcome/signup.html", {'form': form})
+            return render(request, "misc/notfound_page.html")
     else:
         form = SignupForm()
         context = {'form': form}
@@ -159,7 +150,6 @@ def signup(request):
 def logout_view(request):
     logout(request)
     return render(request, "welcome/index.html")
-
 
 def login_view(request):
     if request.method == "POST":
@@ -171,7 +161,6 @@ def login_view(request):
             user = authenticate(username=username, password=password)
             print('here')
             if user is not None:
-                print('here')
                 login(request, user)
                 return redirect(reverse('userhome'))
         else:
@@ -235,7 +224,6 @@ def upload_profile_picture(request):
     return render(request, 'upload_profile_picture.html', {'form': form})
 
 
-
 def add_bio(request):
     if request.method == 'POST':
         text = request.POST.get('bio')
@@ -245,7 +233,7 @@ def add_bio(request):
         user_profile.save()
         return redirect('userhome')  # Redirect to profile view page
     else:
-        return render(request, 'notfound_page.html')  # Handle GET request
+        return render(request, 'misc/notfound_page.html')  # Handle GET request
 
 
 def leaderboard_users(request, user_id):
@@ -264,9 +252,17 @@ def leaderboard_users(request, user_id):
         return render(request, 'user/leaderboard_users.html', context)
     except User.DoesNotExist:
         # Handle the case where the user does not exist
-        return render(request, 'user/notfound_page.html')
+        return render(request, 'misc/hidden_user.html')
 
 
+def company_info(request):
+    return render(request, 'misc/company_info.html')
+
+def info(request):
+    return render(request, 'misc/info.html')
+
+def contact(request):
+    return render(request, 'misc/contact.html')
 
 # from django.http import JsonResponse
 
