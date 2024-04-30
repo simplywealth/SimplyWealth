@@ -179,7 +179,6 @@ def calculate_total(user_transactions):
 
 def userhome(request):
     if request.user.is_authenticated:
-        print('here- successful')
         try:
             user_profile = UserProfile.objects.get(user=request.user)
             user_transactions = Transaction.objects.filter(user=user_profile)
@@ -196,14 +195,73 @@ def userhome(request):
 
             # Fetch data for 
             leader_board = Leaderboard_Weekly.objects.order_by('-current_total')[:5]
-            print('hello here')
+            user_portfolio = UserStockPortfolio.objects.filter(user=user_profile, stock_units__gt = 0)
+            curr_date =  date.today()
+            user_portfolio_perfomance = {"dates":[], 'stocks':{'portfolio':[]}}
+            user_stocks = dict()
+            for instance in user_portfolio:
+                user_stocks[instance.stock_symbol] = instance.stock_units
+            user_stock_prices = {'portfolio':None}
+            date_iter = 1
+            while len(user_portfolio_perfomance["dates"]) < 5:
+                temp_date = curr_date - timedelta(days=date_iter)
+                if temp_date.weekday() < 5:
+                    user_portfolio_perfomance["dates"].append(temp_date.strftime('%Y-%m-%d'))
+                date_iter += 1
+
+            user_portfolio_perfomance["dates"] = user_portfolio_perfomance["dates"][::-1]
+
+            user_stock_graph_data = dict()
+
+            for user_stock, stock_units in user_stocks.items():
+                api_url = f"https://api.polygon.io/v2/aggs/ticker/{user_stock}/range/1/day/{user_portfolio_perfomance["dates"][0]}/{user_portfolio_perfomance["dates"][-1]}?adjusted=true&sort=asc&apiKey=UqR1AwHB4eIRO0pUzjG8IxuMlFHeJczI"
+                api_resp = requests.get(api_url).json()['results']
+                user_stock_graph_data[user_stock] = [x['c'] for x in api_resp]
+
+            
+         
+            if len(user_stocks) > 0:
+                for n in range(5):
+                    prev_day_portfol_price = user_stock_prices['portfolio']
+                    curr_day_portfol_price = 0
+                    for user_stock, stock_units in user_stocks.items():
+                        if user_stock in user_stock_prices:
+                            prev_day_price = user_stock_prices[user_stock]
+                        else:
+                            prev_day_price = None
+                        temp_close_price = user_stock_graph_data[user_stock][n]
+                        curr_day_portfol_price += temp_close_price
+                        if prev_day_price is None:
+                            profit_loss_percent = 0
+                        else:
+                            profit_loss_percent = ((temp_close_price - prev_day_price) / prev_day_price) * 100
+                        if user_stock in user_portfolio_perfomance['stocks']:
+                            user_portfolio_perfomance['stocks'][user_stock].append(profit_loss_percent)
+                        else:
+                            user_portfolio_perfomance['stocks'][user_stock] = [profit_loss_percent]
+                        if user_stock in user_stock_prices:
+                            pass
+                        else:
+                            user_stock_prices[user_stock] = temp_close_price
+                    
+                    if prev_day_portfol_price is None:
+                        portfol_profit_losss_percent = 0
+                    else:
+                        portfol_profit_losss_percent = ((curr_day_portfol_price - prev_day_portfol_price)/prev_day_portfol_price) * 100
+                    if user_stock_prices['portfolio'] is None:
+                        user_stock_prices['portfolio'] = curr_day_portfol_price
+                    user_portfolio_perfomance['stocks']['portfolio'].append(portfol_profit_losss_percent)
+            else:
+                user_portfolio_perfomance['stocks']['portfolio'] = [None, None, None, None, None]
+
             
             return render(request, "user/userhome.html", {'user_profile': user_profile, 
                                 'user_total': total_amount, 
                                 'top_gainers': top_gainers_data,
                                 'top_movers': top_movers_data,
                                 'top_losers': top_losers_data,
-                                'leader_board': leader_board})
+                                'leader_board': leader_board,
+                                'user_portfolio_perfomance':json.dumps(user_portfolio_perfomance)})
         except UserProfile.DoesNotExist:
             messages.error(request, "user profile not found.")
             return redirect('index')

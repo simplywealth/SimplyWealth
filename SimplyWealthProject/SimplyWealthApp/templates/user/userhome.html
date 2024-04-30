@@ -12,6 +12,8 @@
     
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="{% static 'js/userhome.js' %}"></script>
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+
 </head>
 <body>
     <header>
@@ -244,60 +246,36 @@
                         <ul id="stockSuggestions"></ul>
                         <button type="submit" class="button-style">Search</button>
                     </form>
-                    <canvas id="polarAreaChart" width="400" height="400"></canvas>
-                        <script>
-                            // Chart data for Polar Area chart
-                            var polarData = {
-                                labels: ["Highly Speculative", "Speculative", "Adventurous", "Balanced", "Conservative"],
-                                datasets: [{
-                                    data: [12, 19, 3, 5, 2],
-                                    backgroundColor: [
-                                        'rgba(255, 99, 132, 0.5)',
-                                        'rgba(54, 162, 235, 0.5)',
-                                        'rgba(255, 206, 86, 0.5)',
-                                        'rgba(75, 192, 192, 0.5)',
-                                        'rgba(153, 102, 255, 0.5)'
-                                    ],
-                                    borderColor: [
-                                        'rgba(255, 99, 132, 1)',
-                                        'rgba(54, 162, 235, 1)',
-                                        'rgba(255, 206, 86, 1)',
-                                        'rgba(75, 192, 192, 1)',
-                                        'rgba(153, 102, 255, 1)'
-                                    ],
-                                    borderWidth: 1
-                                }]
-                            };
-                        
-                            var polarOptions = {
-                                title:{
-                                    display: true, 
-                                    text: 'TEST',
-                                    fontSize: 16
-                                },
-                                scale: {
-                                    ticks: {
-                                        beginAtZero: true
-                                    }
-                                }
-                            };
-                        
-                            // Get canvas element for Polar Area chart
-                            var polarCtx = document.getElementById("polarAreaChart").getContext("2d");
-                        
-                            // Create Polar Area chart
-                            var polarChart = new Chart(polarCtx, {
-                                type: 'polarArea',
-                                data: polarData,
-                                options: polarOptions
-                            });
-                        </script>
+                    <div id="portfolioGraph" style="width: 400px; height: 400px;"></div>
 
                 </div>
                 <div class="right-column">
                     <canvas id="progressiveLineChart" width="400" height="400"></canvas>
                     <progress id="animationProgress" value="0" max="1"></progress>
                 </div>
+                <script>
+                    var userPortfolio = JSON.parse('{{user_portfolio_perfomance | escapejs}}');
+                    const dates = userPortfolio.dates;
+                    var data = [];
+                    if(Object.keys(userPortfolio.stocks).length > 0){
+                        for (const stock in userPortfolio.stocks){
+                            var temp = {
+                                type:"scatter",
+                                mode:"lines",
+                                name:stock,
+                                x:dates,
+                                y:userPortfolio.stocks[stock]
+                            }
+                            data.push(temp)
+                        }
+
+
+                    }
+                    
+
+                    
+                    Plotly.newPlot('portfolioGraph', data)
+                </script>
                 
                 <script>
                     document.addEventListener("DOMContentLoaded", function() {
