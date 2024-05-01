@@ -2,7 +2,7 @@ from django.shortcuts import render, redirect
 from django.http import HttpResponse, JsonResponse
 from django.contrib import messages
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
-from .forms import SignupForm, ProfilePictureForm
+from .forms import SignupForm, ProfilePictureForm, FriendSearchForm
 from django.urls import reverse
 from django.contrib.auth import authenticate, login, logout
 from .models import *
@@ -214,46 +214,50 @@ def userhome(request):
             user_stock_graph_data = dict()
 
             for user_stock, stock_units in user_stocks.items():
-                api_url = f"https://api.polygon.io/v2/aggs/ticker/{user_stock}/range/1/day/{user_portfolio_perfomance["dates"][0]}/{user_portfolio_perfomance["dates"][-1]}?adjusted=true&sort=asc&apiKey=UqR1AwHB4eIRO0pUzjG8IxuMlFHeJczI"
+                api_url = f"https://api.polygon.io/v2/aggs/ticker/{user_stock}/range/1/day/{user_portfolio_perfomance['dates'][0]}/{user_portfolio_perfomance['dates'][-1]}?adjusted=true&sort=asc&apiKey=UqR1AwHB4eIRO0pUzjG8IxuMlFHeJczI"
                 api_resp = requests.get(api_url).json()['results']
                 user_stock_graph_data[user_stock] = [x['c'] for x in api_resp]
 
             
          
             if len(user_stocks) > 0:
-                for n in range(5):
-                    prev_day_portfol_price = user_stock_prices['portfolio']
-                    curr_day_portfol_price = 0
-                    for user_stock, stock_units in user_stocks.items():
-                        if user_stock in user_stock_prices:
-                            prev_day_price = user_stock_prices[user_stock]
+                try:
+                    for n in range(len(user_stocks)):
+                        prev_day_portfol_price = user_stock_prices['portfolio']
+                        curr_day_portfol_price = 0
+                        for user_stock, stock_units in user_stocks.items():
+                            if user_stock in user_stock_prices:
+                                prev_day_price = user_stock_prices[user_stock]
+                            else:
+                                prev_day_price = None
+                            temp_close_price = user_stock_graph_data[user_stock][n]
+                            curr_day_portfol_price += temp_close_price
+                            if prev_day_price is None:
+                                profit_loss_percent = 0
+                            else:
+                                profit_loss_percent = ((temp_close_price - prev_day_price) / prev_day_price) * 100
+                            if user_stock in user_portfolio_perfomance['stocks']:
+                                user_portfolio_perfomance['stocks'][user_stock].append(profit_loss_percent)
+                            else:
+                                user_portfolio_perfomance['stocks'][user_stock] = [profit_loss_percent]
+                            if user_stock in user_stock_prices:
+                                pass
+                            else:
+                                user_stock_prices[user_stock] = temp_close_price
+                        
+                        if prev_day_portfol_price is None:
+                            portfol_profit_losss_percent = 0
                         else:
-                            prev_day_price = None
-                        temp_close_price = user_stock_graph_data[user_stock][n]
-                        curr_day_portfol_price += temp_close_price
-                        if prev_day_price is None:
-                            profit_loss_percent = 0
-                        else:
-                            profit_loss_percent = ((temp_close_price - prev_day_price) / prev_day_price) * 100
-                        if user_stock in user_portfolio_perfomance['stocks']:
-                            user_portfolio_perfomance['stocks'][user_stock].append(profit_loss_percent)
-                        else:
-                            user_portfolio_perfomance['stocks'][user_stock] = [profit_loss_percent]
-                        if user_stock in user_stock_prices:
-                            pass
-                        else:
-                            user_stock_prices[user_stock] = temp_close_price
-                    
-                    if prev_day_portfol_price is None:
-                        portfol_profit_losss_percent = 0
-                    else:
-                        portfol_profit_losss_percent = ((curr_day_portfol_price - prev_day_portfol_price)/prev_day_portfol_price) * 100
-                    if user_stock_prices['portfolio'] is None:
-                        user_stock_prices['portfolio'] = curr_day_portfol_price
-                    user_portfolio_perfomance['stocks']['portfolio'].append(portfol_profit_losss_percent)
-            else:
-                user_portfolio_perfomance['stocks']['portfolio'] = [None, None, None, None, None]
+                            portfol_profit_losss_percent = ((curr_day_portfol_price - prev_day_portfol_price)/prev_day_portfol_price) * 100
+                        if user_stock_prices['portfolio'] is None:
+                            user_stock_prices['portfolio'] = curr_day_portfol_price
+                        user_portfolio_perfomance['stocks']['portfolio'].append(portfol_profit_losss_percent)
+                except Exception as err:
+                    user_portfolio_perfomance['stocks']['portfolio'] = [None, None, None, None, None]
 
+            else:
+                    user_portfolio_perfomance['stocks']['portfolio'] = [None, None, None, None, None]
+                
             
             return render(request, "user/userhome.html", {'user_profile': user_profile, 
                                 'user_total': total_amount, 
@@ -325,6 +329,30 @@ def info(request):
 
 def contact(request):
     return render(request, 'misc/contact.html')
+
+
+def search_friends(request):
+    query = request.GET.get('query')
+    if query:
+        # Perform a search based on the query
+        user = User.objects.get(username=query)
+        # Assuming you have a UserProfile model associated with the User model
+        try:
+            user_profile = user.userprofile  # Replace 'userprofile' with your actual UserProfile model field name
+        except Exception as err:
+            return render(request, 'misc/hidden_user.html')
+
+        user_stock_portfolios = UserStockPortfolio.objects.filter(user=user_profile)
+        context = {
+            'user': user,
+            'user_profile': user_profile,
+            'stocks':user_stock_portfolios
+            }
+        return render(request, 'user/leaderboard_users.html', context)
+    else:
+        # If no query is provided, return all friends
+        friends = User.objects.all()
+    return render(request, 'leaderboard_users.html', {'friends': friends, 'query': query})
 
 # from django.http import JsonResponse
 

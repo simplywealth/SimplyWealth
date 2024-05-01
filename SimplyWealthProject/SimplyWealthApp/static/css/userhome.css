@@ -337,3 +337,15 @@ section#center-bottom {
     margin: 0 auto;
     margin-bottom: 10px; 
 }
+
+
+.searchbar-container {
+    display: flex;
+    justify-content: center; /* Horizontally center the content */
+    align-items: center; /* Vertically center the content */
+}
+
+.searchbar {
+    width: 300px; /* Adjust width as needed */
+    border-radius: 10px; 
+}

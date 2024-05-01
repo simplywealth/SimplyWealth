@@ -22,6 +22,7 @@ urlpatterns = [
     path('add_bio/', views.add_bio, name="add_bio"),
     path('company_info/', views.company_info, name="company_info"),
     path('info/', views.info, name="info"),
-    path('contact/', views.contact, name="contact")
+    path('contact/', views.contact, name="contact"),
+    path('search_friends/', views.search_friends, name="search_friends")
 
 ]
