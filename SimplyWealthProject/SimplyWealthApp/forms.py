@@ -18,3 +18,7 @@ class ProfilePictureForm(forms.ModelForm):
     class Meta:
         model = UserProfile
         fields = ['profile_picture']
+
+    
+class FriendSearchForm(forms.ModelForm):
+    query = forms.CharField(max_length=100, label='Search for Friends')

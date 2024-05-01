@@ -33,6 +33,13 @@
             </form>
         </div>
     </header>
+    <div class="searchbar-container">
+        <!-- template.html -->
+        <form action="{% url 'search_friends' %}" method="GET" class="searchbar">
+            <input type="text"  name="query" placeholder="Search for user...">
+            <button type="submit" class="button-style">Search</button>
+        </form>
+    </div>
     <div class="grid-container">
 
         <aside id="left-side">
