@@ -1,0 +1,676 @@
+##html for signout 
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SimplyWealth - Sign out</title>
+    <link rel="stylesheet" href="{% static 'css/homepage.css' %}">
+</head>
+<body>
+    <div class="banner">
+        <header>
+            <div class="logo">
+                <img src="{% static 'img/logo.png' %}" alt="Logo">
+            </div>
+            <nav class="navbar">
+                <ul>
+                    <li><a href="#">Home</a></li>
+                    <li><a href="#">About</a></li>
+                    <li><a href="#">Contact</a></li>
+                </ul>
+            </nav>
+        </header>
+        <div class="center-content">
+            <h1>SimplyWealth</h1>
+            <div class="button-container">
+                <a href="{% url 'signup' %}" class="button">Sign Up</a>
+                <a href="{% url 'login_view' %}" class="button">Login</a>
+                <a href="{% url 'logout_view' %}" class="button">Sign out</a>  <!-- Updated button text -->
+            </div>
+        </div>
+    </div>
+</body>
+</html>
+
+
+##python code for signout 
+from django.contrib.auth import logout  # Import the logout function
+def signout_view(request):
+    logout(request)
+    messages.success(request, "You have been successfully signed out.")
+    return redirect('index')
+
+from django.contrib.auth import logout
+from django.shortcuts import redirect
+from django.contrib import messages
+
+def signout_view(request):
+    logout(request)
+    messages.success(request, "You have been successfully signed out.")
+    return redirect(request, "welcome/index.html") # Redirect to the login page
+
+##get the application for search_friends
+from flask import Flask, render_template, request
+import re
+
+app = Flask(__name__)
+
+# Function to extract friend names from userhome.css
+def extract_friends_from_css():
+    with open('static/userhome.css', 'r') as f:
+        css_content = f.read()
+    friend_names = re.findall(r'.friend::after\s*{\s*content:\s*"(.*)";\s*}', css_content)
+    return friend_names
+
+# Load friends from CSS file
+friends = extract_friends_from_css()
+
+@app.route('/')
+def index():
+    return render_template('search_friends.html')
+
+@app.route('/search', methods=['POST'])
+def search_friends():
+    search_query = request.form.get('search')
+    search_results = [friend for friend in friends if search_query.lower() in friend.lower()]
+    return render_template('search_friends.html', search_results=search_results)
+
+if __name__ == '__main__':
+    app.run(debug=True)
+
+
+##html for search_friends
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Search Friends</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='userhome.css') }}">
+</head>
+<body>
+    <div class="container">
+        <h1>Search Friends</h1>
+        <form action="/search" method="POST">
+            <label for="search">Search:</label>
+            <input type="text" id="search" name="search">
+            <button type="submit">Search</button>
+        </form>
+        <div id="search-results">
+            {% if search_results %}
+                <ul>
+                {% for friend in search_results %}
+                    <li>{{ friend }}</li>
+                {% endfor %}
+                </ul>
+            {% endif %}
+        </div>
+    </div>
+</body>
+</html>
+
+##html file for search firends and add friends without flask 
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Search and Add Friends</title>
+</head>
+<body>
+    <h1>Search and Add Friends</h1>
+    
+    <!-- Search Friends Section -->
+    <h2>Search Friends</h2>
+    <input type="text" id="searchInput" placeholder="Enter friend's name...">
+    <button onclick="searchFriends()">Search</button>
+    <div id="searchResults"></div>
+
+    <!-- Add Friends Section -->
+    <h2>Add Friends</h2>
+    <input type="text" id="addInput" placeholder="Enter friend's name...">
+    <button onclick="addFriend()">Add</button>
+
+    <script>
+        // Dummy friend data
+        var friends = ["Alice", "Bob", "Charlie", "David", "Emma"];
+
+        // Function to search friends
+        function searchFriends() {
+            var query = document.getElementById("searchInput").value.toLowerCase();
+            var searchResults = friends.filter(function(friend) {
+                return friend.toLowerCase().includes(query);
+            });
+
+            var searchResultsDiv = document.getElementById("searchResults");
+            searchResultsDiv.innerHTML = "";
+            if (searchResults.length === 0) {
+                searchResultsDiv.textContent = "No results found.";
+            } else {
+                searchResults.forEach(function(result) {
+                    var p = document.createElement("p");
+                    p.textContent = result;
+                    searchResultsDiv.appendChild(p);
+                });
+            }
+        }
+
+        // Function to add friend
+        function addFriend() {
+            var friendName = document.getElementById("addInput").value;
+            if (friendName) {
+                friends.push(friendName);
+                alert(friendName + " added as a friend.");
+                // Optionally, you can clear the input field after adding the friend
+                document.getElementById("addInput").value = "";
+            } else {
+                alert("Please enter a friend's name.");
+            }
+        }
+    </script>
+</body>
+</html>
+
+##Python script that generates an HTML file with search and add friend functionalities:
+def generate_html_file():
+    html_content = """
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Search and Add Friends</title>
+</head>
+<body>
+    <h1>Search and Add Friends</h1>
+    
+    <!-- Search Friends Section -->
+    <h2>Search Friends</h2>
+    <input type="text" id="searchInput" placeholder="Enter friend's name...">
+    <button onclick="searchFriends()">Search</button>
+    <div id="searchResults"></div>
+
+    <!-- Add Friends Section -->
+    <h2>Add Friends</h2>
+    <input type="text" id="addInput" placeholder="Enter friend's name...">
+    <button onclick="addFriend()">Add</button>
+
+    <script>
+        // Dummy friend data
+        var friends = ["Alice", "Bob", "Charlie", "David", "Emma"];
+
+        // Function to search friends
+        function searchFriends() {
+            var query = document.getElementById("searchInput").value.toLowerCase();
+            var searchResults = friends.filter(function(friend) {
+                return friend.toLowerCase().includes(query);
+            });
+
+            var searchResultsDiv = document.getElementById("searchResults");
+            searchResultsDiv.innerHTML = "";
+            if (searchResults.length === 0) {
+                searchResultsDiv.textContent = "No results found.";
+            } else {
+                searchResults.forEach(function(result) {
+                    var p = document.createElement("p");
+                    p.textContent = result;
+                    searchResultsDiv.appendChild(p);
+                });
+            }
+        }
+
+        // Function to add friend
+        function addFriend() {
+            var friendName = document.getElementById("addInput").value;
+            if (friendName) {
+                friends.push(friendName);
+                alert(friendName + " added as a friend.");
+                // Optionally, you can clear the input field after adding the friend
+                document.getElementById("addInput").value = "";
+            } else {
+                alert("Please enter a friend's name.");
+            }
+        }
+    </script>
+</body>
+</html>
+"""
+
+    with open("search_and_add_friends.html", "w") as html_file:
+        html_file.write(html_content)
+
+if __name__ == "__main__":
+    generate_html_file()
+
+##fixed code for html, trying to make it as a diagram
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Search and Add Friends Diagram</title>
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        margin: 20px;
+    }
+
+    .container {
+        max-width: 800px;
+        margin: 0 auto;
+    }
+
+    h1 {
+        text-align: center;
+    }
+
+    .box {
+        border: 1px solid #ccc;
+        padding: 10px;
+        margin-bottom: 20px;
+    }
+
+    .box-title {
+        background-color: #f0f0f0;
+        padding: 5px;
+        margin-bottom: 10px;
+    }
+
+    .code {
+        font-family: 'Courier New', Courier, monospace;
+        white-space: pre-wrap;
+    }
+</style>
+</head>
+<body>
+    <div class="container">
+        <h1>Search and Add Friends Diagram</h1>
+
+        <!-- Search Friends Section -->
+        <div class="box">
+            <div class="box-title">Search Friends</div>
+            <p>Retrieves input query from the search input field.</p>
+            <p>Filters the list of friends based on the query.</p>
+            <p>Displays the search results in the designated area.</p>
+            <pre class="code">
+                &lt;!-- Search Friends Section --&gt;
+                &lt;input type="text" id="searchInput" placeholder="Enter friend's name..."&gt;
+                &lt;button onclick="searchFriends()"&gt;Search&lt;/button&gt;
+                &lt;div id="searchResults"&gt;&lt;/div&gt;
+            </pre>
+        </div>
+
+        <!-- Add Friends Section -->
+        <div class="box">
+            <div class="box-title">Add Friends</div>
+            <p>Retrieves the new friend's name from the add input field.</p>
+            <p>Adds the new friend to the list of friends.</p>
+            <p>Displays an alert confirming the addition of the new friend.</p>
+            <pre class="code">
+                &lt;!-- Add Friends Section --&gt;
+                &lt;input type="text" id="addInput" placeholder="Enter friend's name..."&gt;
+                &lt;button onclick="addFriend()"&gt;Add&lt;/button&gt;
+            </pre>
+        </div>
+    </div>
+
+    <script>
+        // Dummy JavaScript functions for illustration purposes
+        function searchFriends() {
+            alert("Searching for friends...");
+        }
+
+        function addFriend() {
+            alert("Adding a new friend...");
+        }
+    </script>
+</body>
+</html>
+
+##Python Script code 
+def generate_html_diagram():
+    html_content = """
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Search and Add Friends Diagram</title>
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        margin: 20px;
+    }
+
+    .container {
+        max-width: 800px;
+        margin: 0 auto;
+    }
+
+    h1 {
+        text-align: center;
+    }
+
+    .box {
+        border: 1px solid #ccc;
+        padding: 10px;
+        margin-bottom: 20px;
+    }
+
+    .box-title {
+        background-color: #f0f0f0;
+        padding: 5px;
+        margin-bottom: 10px;
+    }
+
+    .code {
+        font-family: 'Courier New', Courier, monospace;
+        white-space: pre-wrap;
+    }
+</style>
+</head>
+<body>
+    <div class="container">
+        <h1>Search and Add Friends Diagram</h1>
+
+        <!-- Search Friends Section -->
+        <div class="box">
+            <div class="box-title">Search Friends</div>
+            <p>Retrieves input query from the search input field.</p>
+            <p>Filters the list of friends based on the query.</p>
+            <p>Displays the search results in the designated area.</p>
+            <pre class="code">
+                &lt;!-- Search Friends Section --&gt;
+                &lt;input type="text" id="searchInput" placeholder="Enter friend's name..."&gt;
+                &lt;button onclick="searchFriends()"&gt;Search&lt;/button&gt;
+                &lt;div id="searchResults"&gt;&lt;/div&gt;
+            </pre>
+        </div>
+
+        <!-- Add Friends Section -->
+        <div class="box">
+            <div class="box-title">Add Friends</div>
+            <p>Retrieves the new friend's name from the add input field.</p>
+            <p>Adds the new friend to the list of friends.</p>
+            <p>Displays an alert confirming the addition of the new friend.</p>
+            <pre class="code">
+                &lt;!-- Add Friends Section --&gt;
+                &lt;input type="text" id="addInput" placeholder="Enter friend's name..."&gt;
+                &lt;button onclick="addFriend()"&gt;Add&lt;/button&gt;
+            </pre>
+        </div>
+    </div>
+
+    <script>
+        // Dummy JavaScript functions for illustration purposes
+        function searchFriends() {
+            alert("Searching for friends...");
+        }
+
+        function addFriend() {
+            alert("Adding a new friend...");
+        }
+    </script>
+</body>
+</html>
+"""
+
+    with open("search_and_add_friends_diagram.html", "w") as html_file:
+        html_file.write(html_content)
+
+if __name__ == "__main__":
+    generate_html_diagram()
+
+
+<!Search and Add Friends html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Search and Add Friends</title>
+</head>
+<body>
+    <h1>Search and Add Friends</h1>
+
+    <h2>Search Friends</h2>
+    <input type="text" id="searchInput" onkeyup="searchFriends()" placeholder="Enter friend's name...">
+    <div id="searchResults"></div>
+
+    <h2>Add Friends</h2>
+    <input type="text" id="addInput" placeholder="Enter friend's name...">
+    <button onclick="addFriend()">Add Friend</button>
+
+    <h2>All Friends</h2>
+    <ul id="friendsList">
+    </ul>
+    <script>
+        function searchFriends() {
+            var input, filter, ul, li, a, i, txtValue;
+            input = document.getElementById('searchInput');
+            filter = input.value.toUpperCase();
+            ul = document.getElementById("friendsList");
+            li = ul.getElementsByTagName('li');
+            
+            for (i = 0; i < li.length; i++) {
+                a = li[i].getElementsByTagName("a")[0];
+                txtValue = a.textContent || a.innerText;
+                if (txtValue.toUpperCase().indexOf(filter) > -1) {
+                    li[i].style.display = "";
+                } else {
+                    li[i].style.display = "none";
+                }
+            }
+        }
+
+        function addFriend() {
+            var friendName = document.getElementById("addInput").value.trim();
+            if (friendName) {
+                appendFriendToHTML(friendName);
+                alert(friendName + " added as a friend.");
+                document.getElementById("addInput").value = "";
+            } else {
+                alert("Please enter a friend's name.");
+            }
+        }
+
+        function appendFriendToHTML(friendName) {
+            var ul = document.getElementById("friendsList");
+            var li = document.createElement("li");
+            var a = document.createElement("a");
+            a.appendChild(document.createTextNode(friendName));
+            li.appendChild(a);
+            ul.appendChild(li);
+        }
+
+        function populateFriendsList() {
+            fetch('model.py')
+            .then(response => response.text())
+            .then(data => {
+                var friendsList = document.getElementById("friendsList");
+                var friendsStartIndex = data.indexOf("<ul>") + 4;
+                var friendsEndIndex = data.indexOf("</ul>");
+                var friendsHTML = data.substring(friendsStartIndex, friendsEndIndex);
+                friendsList.innerHTML = friendsHTML;
+            });
+        }
+        
+        window.onload = populateFriendsList;
+    </script>
+</body>
+</html>
+
+##Search and Add Friends .py file
+from http.server import BaseHTTPRequestHandler, HTTPServer
+class RequestHandler(BaseHTTPRequestHandler):
+    def do_GET(self):
+        if self.path == '/':
+            self.path = 'index.html'
+        try:
+            file_to_open = open(self.path[1:]).read()
+            self.send_response(200)
+        except:
+            file_to_open = "File not found"
+            self.send_response(404)
+        
+        self.end_headers()
+        self.wfile.write(bytes(file_to_open, 'utf-8'))
+def run(server_class=HTTPServer, handler_class=RequestHandler, port=8000):
+    server_address = ('', port)
+    httpd = server_class(server_address, handler_class)
+    print(f'Starting server on port {port}')
+    httpd.serve_forever()
+if __name__ == "__main__":
+    run()
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Search and Add Friends</title>
+</head>
+<body>
+    <h1>Search and Add Friends</h1>
+
+    <!-- Search Friends Section -->
+    <h2>Search Friends</h2>
+    <input type="text" id="searchInput" onkeyup="searchFriends()" placeholder="Enter friend's name...">
+    <div id="searchResults"></div>
+
+    <!-- Add Friends Section -->
+    <h2>Add Friends</h2>
+    <input type="text" id="addInput" placeholder="Enter friend's name...">
+    <button onclick="addFriend()">Add Friend</button>
+
+    <!-- Display Friends Section -->
+    <h2>All Friends</h2>
+    <ul id="friendsList">
+        <!-- Friends list will be dynamically populated -->
+    </ul>
+
+    <!-- Script to dynamically populate friends list and handle AJAX requests -->
+    <script>
+        // Function to search friends
+        function searchFriends() {
+            var input, filter, ul, li, a, i, txtValue;
+            input = document.getElementById('searchInput');
+            filter = input.value.toUpperCase();
+            ul = document.getElementById("friendsList");
+            li = ul.getElementsByTagName('li');
+            
+            for (i = 0; i < li.length; i++) {
+                a = li[i].getElementsByTagName("a")[0];
+                txtValue = a.textContent || a.innerText;
+                if (txtValue.toUpperCase().indexOf(filter) > -1) {
+                    li[i].style.display = "";
+                } else {
+                    li[i].style.display = "none";
+                }
+            }
+        }
+
+        // Function to add friend
+        function addFriend() {
+            var friendName = document.getElementById("addInput").value.trim();
+            if (friendName) {
+                fetch('/add_friend/', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRFToken': getCookie('csrftoken')
+                    },
+                    body: JSON.stringify({'friend_name': friendName})
+                })
+                .then(response => response.json())
+                .then(data => {
+                    alert(data.message);
+                    populateFriendsList();
+                });
+                // Optionally, you can clear the input field after adding the friend
+                document.getElementById("addInput").value = "";
+            } else {
+                alert("Please enter a friend's name.");
+            }
+        }
+
+        // Function to dynamically populate friends list
+        function populateFriendsList() {
+            fetch('/search_friends/', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': getCookie('csrftoken')
+                },
+                body: JSON.stringify({'search_name': ''})
+            })
+            .then(response => response.json())
+            .then(data => {
+                var friendsList = document.getElementById("friendsList");
+                friendsList.innerHTML = '';
+                data.matching_friends.forEach(friend => {
+                    var li = document.createElement("li");
+                    var a = document.createElement("a");
+                    a.appendChild(document.createTextNode(friend));
+                    li.appendChild(a);
+                    friendsList.appendChild(li);
+                });
+            });
+        }
+
+        // Function to get CSRF token from cookie
+        function getCookie(name) {
+            var cookieValue = null;
+            if (document.cookie && document.cookie !== '') {
+                var cookies = document.cookie.split(';');
+                for (var i = 0; i < cookies.length; i++) {
+                    var cookie = cookies[i].trim();
+                    // Does this cookie string begin with the name we want?
+                    if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                        break;
+                    }
+                }
+            }
+            return cookieValue;
+        }
+
+        // Populate friends list when the page loads
+        window.onload = populateFriendsList;
+    </script>
+</body>
+</html>
+
+from django.db import models
+
+class User(models.Model):
+    name = models.CharField(max_length=100)
+
+    def __str__(self):
+        return self.name
+from django.urls import path
+from . import views
+
+urlpatterns = [
+    path('search_friends/', views.search_friends, name='search_friends'),
+    path('add_friend/', views.add_friend, name='add_friend'),
+]
+from django.shortcuts import render
+from django.http import JsonResponse
+from .models import User
+
+def search_friends(request):
+    if request.method == 'POST':
+        search_name = request.POST.get('search_name', '')
+        matching_friends = list(User.objects.filter(name__icontains=search_name).values_list('name', flat=True))
+        return JsonResponse({'matching_friends': matching_friends})
+    return JsonResponse({})
+
+def add_friend(request):
+    if request.method == 'POST':
+        friend_name = request.POST.get('friend_name', '')
+        new_friend = User.objects.create(name=friend_name)
+        return JsonResponse({'message': f'{friend_name} added as a friend.'})
+    return JsonResponse({})
+
+
