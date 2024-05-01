@@ -222,7 +222,7 @@ def userhome(request):
          
             if len(user_stocks) > 0:
                 try:
-                    for n in range(len(user_stocks)):
+                    for n in range(5):
                         prev_day_portfol_price = user_stock_prices['portfolio']
                         curr_day_portfol_price = 0
                         for user_stock, stock_units in user_stocks.items():
